@@ -191,8 +191,15 @@
             if (!y) continue;
             const cd = String(y.冷却状态 || '').trim();
             if (cd === '封印' || cd === '已封印') continue;
-            const mastery = String(y.掌握程度 || '').trim();
-            let ratio = safeNum(YANLING_BONUS_BY_MASTERY[mastery], 0);
+            const rawMastery = y.掌握程度;
+            let ratio = 0;
+            if (typeof rawMastery === 'number') {
+                // 数字直接当比率用（如 0.5 = 50%加成）
+                ratio = clamp(rawMastery, 0, 1);
+            } else {
+                const mastery = String(rawMastery || '').trim();
+                ratio = safeNum(YANLING_BONUS_BY_MASTERY[mastery], 0);
+            }
             if (cd === '冷却中' || cd === '冷却') ratio *= 0.5;
             if (ratio > maxRatio) maxRatio = ratio;
         }
