@@ -321,10 +321,10 @@
             const equipBonus = calcEquipmentBonus(currentBaseCP, protagonist.资源?.炼金武装);
             const totalExternal = yanlingBonus + authorityBonus + equipBonus;
 
-            // 同步加成总值到战力详情（无条件重算）
-            details.言灵加成总值 = yanlingBonus;
-            details.权柄加成总值 = authorityBonus;
-            details.炼金武装加成总值 = equipBonus;
+            // 同步加成总值到战力详情
+            if (safeNum(details.言灵加成总值, 0) !== yanlingBonus) details.言灵加成总值 = yanlingBonus;
+            if (safeNum(details.权柄加成总值, 0) !== authorityBonus) details.权柄加成总值 = authorityBonus;
+            if (safeNum(details.炼金武装加成总值, 0) !== equipBonus) details.炼金武装加成总值 = equipBonus;
 
             // ---- 衰减后外部加成 ----
             const attenuated = attenuateExternalBonus(currentBaseCP, totalExternal, bloodline);
@@ -351,19 +351,26 @@
             stats.血统稳定度 = clamp(safeNum(stats.血统稳定度, 100), 0, 100);
             stats.精神阈值 = clamp(safeNum(stats.精神阈值, 100), 0, 100);
 
-            // ---- 写回存储（关键：确保计算结果持久化） ----
+            // ---- 条件写回：仅当计算值与存储值不一致时才持久化 ----
+            // 避免用旧数据覆盖AI刚写入的新值
             try {
                 const lastMsgId = typeof getLastMessageId === 'function' ? getLastMessageId() : null;
                 if (lastMsgId && typeof Mvu !== 'undefined' && Mvu.replaceMvuData) {
                     const fullData = Mvu.getMvuData({ type: 'message', message_id: lastMsgId });
-                    if (fullData) {
+                    const stored = fullData?.stat_data;
+                    const needWrite = stored && (
+                        safeNum(stored.主角?.数值?.基础战斗力, 0) !== safeNum(stats.基础战斗力, 0) ||
+                        safeNum(stored.主角?.数值?.当前战斗力, 0) !== safeNum(stats.当前战斗力, 0) ||
+                        String(stored.主角?.战力详情?.战力等级 || '') !== String(details.战力等级 || '')
+                    );
+                    if (needWrite && fullData) {
                         fullData.stat_data = data;
                         await Mvu.replaceMvuData(fullData, { type: 'message', message_id: lastMsgId });
-                        console.log('[龙族计算] 已写回存储');
+                        console.log('[龙族计算] 已写回存储（修正不一致的值）');
                     }
                 }
             } catch (e) {
-                console.warn('[龙族计算] 写回存储失败:', e);
+                console.warn('[龙族计算] 写回失败:', e);
             }
             stats.龙血侵蚀度 = clamp(safeNum(stats.龙血侵蚀度, 0), 0, 100);
 
