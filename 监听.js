@@ -265,7 +265,7 @@
     // ==========================================
     let isProcessing = false;
 
-    function handleVariableUpdate(rawVars, rawVarsBefore) {
+    async function handleVariableUpdate(rawVars, rawVarsBefore) {
         if (isProcessing) return;
         isProcessing = true;
 
@@ -350,6 +350,21 @@
             stats.体力 = clamp(safeNum(stats.体力, 100), 0, 100);
             stats.血统稳定度 = clamp(safeNum(stats.血统稳定度, 100), 0, 100);
             stats.精神阈值 = clamp(safeNum(stats.精神阈值, 100), 0, 100);
+
+            // ---- 写回存储（关键：确保计算结果持久化） ----
+            try {
+                const lastMsgId = typeof getLastMessageId === 'function' ? getLastMessageId() : null;
+                if (lastMsgId && typeof Mvu !== 'undefined' && Mvu.replaceMvuData) {
+                    const fullData = Mvu.getMvuData({ type: 'message', message_id: lastMsgId });
+                    if (fullData) {
+                        fullData.stat_data = data;
+                        await Mvu.replaceMvuData(fullData, { type: 'message', message_id: lastMsgId });
+                        console.log('[龙族计算] 已写回存储');
+                    }
+                }
+            } catch (e) {
+                console.warn('[龙族计算] 写回存储失败:', e);
+            }
             stats.龙血侵蚀度 = clamp(safeNum(stats.龙血侵蚀度, 0), 0, 100);
 
         } finally {
