@@ -183,6 +183,28 @@
     // ==========================================
     // 言灵加成计算
     // ==========================================
+    function parseYanlingMastery(raw) {
+        if (raw == null) return 0;
+        // 数字直接当比率
+        if (typeof raw === 'number') return clamp(raw, 0, 1);
+        const s = String(raw).trim();
+        // 文字键查表
+        if (YANLING_BONUS_BY_MASTERY[s] !== undefined) return YANLING_BONUS_BY_MASTERY[s];
+        // 百分比字符串 "50%" → 0.5
+        const pctMatch = s.match(/^(\d+(?:\.\d+)?)%$/);
+        if (pctMatch) return clamp(parseFloat(pctMatch[1]) / 100, 0, 1);
+        // 纯数字字符串 "0.5" → 0.5
+        const num = parseFloat(s);
+        if (!isNaN(num)) {
+            // 如果 >1 可能是百分比形式如 "50" → 0.5
+            return num > 1 ? clamp(num / 100, 0, 1) : clamp(num, 0, 1);
+        }
+        // 常见同义词
+        const synonyms = { '掌握': 0.20, '精通': 0.40, '圆满': 0.70, '初窥': 0.075, '熟练': 0.20 };
+        if (synonyms[s] !== undefined) return synonyms[s];
+        return 0;
+    }
+
     function calcYanlingBonus(baseCP, yanlingList) {
         if (!Array.isArray(yanlingList) || yanlingList.length === 0) return 0;
         // 取最高加成（非叠加）
@@ -191,15 +213,7 @@
             if (!y) continue;
             const cd = String(y.冷却状态 || '').trim();
             if (cd === '封印' || cd === '已封印') continue;
-            const rawMastery = y.掌握程度;
-            let ratio = 0;
-            if (typeof rawMastery === 'number') {
-                // 数字直接当比率用（如 0.5 = 50%加成）
-                ratio = clamp(rawMastery, 0, 1);
-            } else {
-                const mastery = String(rawMastery || '').trim();
-                ratio = safeNum(YANLING_BONUS_BY_MASTERY[mastery], 0);
-            }
+            let ratio = parseYanlingMastery(y.掌握程度);
             if (cd === '冷却中' || cd === '冷却') ratio *= 0.5;
             if (ratio > maxRatio) maxRatio = ratio;
         }
