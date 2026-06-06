@@ -265,21 +265,13 @@
     // ==========================================
     let isProcessing = false;
 
-    async function handleVariableUpdate(rawVars, rawVarsBefore) {
+    function handleVariableUpdate(rawVars, rawVarsBefore) {
         if (isProcessing) return;
         isProcessing = true;
 
         try {
-            // 从存储读最新数据（包含AI刚写入的patch），不用事件传入的深拷贝
-            let data, fullData, msgId;
-            try {
-                msgId = typeof getLastMessageId === 'function' ? getLastMessageId() : null;
-                if (msgId && typeof Mvu !== 'undefined') {
-                    fullData = Mvu.getMvuData({ type: 'message', message_id: msgId });
-                    data = fullData?.stat_data;
-                }
-            } catch (e) {}
-            if (!data) data = rawVars?.stat_data; // fallback
+            // 直接用事件传入的引用（和创世回廊一样，原地修改即持久化）
+            const data = rawVars?.stat_data;
             const dataBefore = rawVarsBefore?.stat_data;
             if (!data || !data.主角) return;
 
@@ -360,15 +352,7 @@
             stats.血统稳定度 = clamp(safeNum(stats.血统稳定度, 100), 0, 100);
             stats.精神阈值 = clamp(safeNum(stats.精神阈值, 100), 0, 100);
 
-            // ---- 写回存储：仅当值不一致时 ----
-            if (fullData && msgId) {
-                try {
-                    await Mvu.replaceMvuData(fullData, { type: 'message', message_id: msgId });
-                    console.log('[龙族计算] 已同步存储');
-                } catch (e) {
-                    console.warn('[龙族计算] 写回失败:', e);
-                }
-            }
+            // 原地修改 rawVars.stat_data 即自动持久化（和创世回廊脚本同理）
             stats.龙血侵蚀度 = clamp(safeNum(stats.龙血侵蚀度, 0), 0, 100);
 
         } finally {
