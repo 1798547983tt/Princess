@@ -270,7 +270,16 @@
         isProcessing = true;
 
         try {
-            const data = rawVars?.stat_data;
+            // 从存储读最新数据（包含AI刚写入的patch），不用事件传入的深拷贝
+            let data, fullData, msgId;
+            try {
+                msgId = typeof getLastMessageId === 'function' ? getLastMessageId() : null;
+                if (msgId && typeof Mvu !== 'undefined') {
+                    fullData = Mvu.getMvuData({ type: 'message', message_id: msgId });
+                    data = fullData?.stat_data;
+                }
+            } catch (e) {}
+            if (!data) data = rawVars?.stat_data; // fallback
             const dataBefore = rawVarsBefore?.stat_data;
             if (!data || !data.主角) return;
 
@@ -351,26 +360,14 @@
             stats.血统稳定度 = clamp(safeNum(stats.血统稳定度, 100), 0, 100);
             stats.精神阈值 = clamp(safeNum(stats.精神阈值, 100), 0, 100);
 
-            // ---- 条件写回：仅当计算值与存储值不一致时才持久化 ----
-            // 避免用旧数据覆盖AI刚写入的新值
-            try {
-                const lastMsgId = typeof getLastMessageId === 'function' ? getLastMessageId() : null;
-                if (lastMsgId && typeof Mvu !== 'undefined' && Mvu.replaceMvuData) {
-                    const fullData = Mvu.getMvuData({ type: 'message', message_id: lastMsgId });
-                    const stored = fullData?.stat_data;
-                    const needWrite = stored && (
-                        safeNum(stored.主角?.数值?.基础战斗力, 0) !== safeNum(stats.基础战斗力, 0) ||
-                        safeNum(stored.主角?.数值?.当前战斗力, 0) !== safeNum(stats.当前战斗力, 0) ||
-                        String(stored.主角?.战力详情?.战力等级 || '') !== String(details.战力等级 || '')
-                    );
-                    if (needWrite && fullData) {
-                        fullData.stat_data = data;
-                        await Mvu.replaceMvuData(fullData, { type: 'message', message_id: lastMsgId });
-                        console.log('[龙族计算] 已写回存储（修正不一致的值）');
-                    }
+            // ---- 写回存储：仅当值不一致时 ----
+            if (fullData && msgId) {
+                try {
+                    await Mvu.replaceMvuData(fullData, { type: 'message', message_id: msgId });
+                    console.log('[龙族计算] 已同步存储');
+                } catch (e) {
+                    console.warn('[龙族计算] 写回失败:', e);
                 }
-            } catch (e) {
-                console.warn('[龙族计算] 写回失败:', e);
             }
             stats.龙血侵蚀度 = clamp(safeNum(stats.龙血侵蚀度, 0), 0, 100);
 
