@@ -306,9 +306,10 @@
             const newBaseCP = calcBaseCP(bloodline, stats, isLocked);
             if (newBaseCP !== null) {
                 const oldBase = safeNum(stats.基础战斗力, 0);
+                // 无条件重算：血统评级变化后必须同步，不能跳过
+                stats.基础战斗力 = newBaseCP;
                 if (oldBase !== newBaseCP) {
-                    stats.基础战斗力 = newBaseCP;
-                    console.log(`[龙族计算] 基础战斗力: ${oldBase} → ${newBaseCP}`);
+                    console.log(`[龙族计算] 基础战斗力: ${oldBase} → ${newBaseCP} (${bloodline})`);
                 }
             }
 
@@ -320,33 +321,27 @@
             const equipBonus = calcEquipmentBonus(currentBaseCP, protagonist.资源?.炼金武装);
             const totalExternal = yanlingBonus + authorityBonus + equipBonus;
 
-            // 同步加成总值到战力详情
-            if (safeNum(details.言灵加成总值, 0) !== yanlingBonus) {
-                details.言灵加成总值 = yanlingBonus;
-            }
-            if (safeNum(details.权柄加成总值, 0) !== authorityBonus) {
-                details.权柄加成总值 = authorityBonus;
-            }
-            if (safeNum(details.炼金武装加成总值, 0) !== equipBonus) {
-                details.炼金武装加成总值 = equipBonus;
-            }
+            // 同步加成总值到战力详情（无条件重算）
+            details.言灵加成总值 = yanlingBonus;
+            details.权柄加成总值 = authorityBonus;
+            details.炼金武装加成总值 = equipBonus;
 
             // ---- 衰减后外部加成 ----
             const attenuated = attenuateExternalBonus(currentBaseCP, totalExternal, bloodline);
 
-            // ---- 当前战斗力 ----
+            // ---- 当前战斗力（无条件重算） ----
             const newCurrentCP = calcCurrentCP(currentBaseCP, rageName, erosion, attenuated, sceneMod);
             const oldCurrentCP = safeNum(stats.当前战斗力, 0);
+            stats.当前战斗力 = newCurrentCP;
             if (oldCurrentCP !== newCurrentCP) {
-                stats.当前战斗力 = newCurrentCP;
                 console.log(`[龙族计算] 当前战斗力: ${oldCurrentCP} → ${newCurrentCP}`);
             }
 
-            // ---- 战力等级自动反推 ----
+            // ---- 战力等级自动反推（无条件重算） ----
             const newRank = deriveCPRank(newCurrentCP);
-            if (details.战力等级 !== newRank) {
-                const oldRank = details.战力等级;
-                details.战力等级 = newRank;
+            const oldRank = details.战力等级;
+            details.战力等级 = newRank;
+            if (oldRank !== newRank) {
                 console.log(`[龙族计算] 战力等级: ${oldRank} → ${newRank}`);
             }
 
