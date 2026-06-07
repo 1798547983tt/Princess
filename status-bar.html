@@ -1,0 +1,579 @@
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap');
+
+    :root {
+      --bg-primary: #0a0a12;
+      --bg-card: rgba(15, 15, 25, 0.92);
+      --bg-glass: rgba(20, 20, 35, 0.85);
+      --border-gold: #c9a94e;
+      --border-dim: rgba(201, 169, 78, 0.3);
+      --text-gold: #e8d48b;
+      --text-white: #e8e6e0;
+      --text-dim: #8a8778;
+      --text-sub: #6b6860;
+      --accent-blue: #4a8bc2;
+      --accent-cyan: #5bb8b0;
+      --accent-red: #c44a4a;
+      --accent-green: #5a9e5a;
+      --accent-purple: #8a6abf;
+      --accent-orange: #c98a3a;
+      --hp-red: #8b2020;
+      --hp-fill: linear-gradient(90deg, #c44a4a, #e06060);
+      --mp-blue: #1a3a6b;
+      --mp-fill: linear-gradient(90deg, #4a8bc2, #6ab0e0);
+      --exp-gold: #6b5a1a;
+      --exp-fill: linear-gradient(90deg, #c9a94e, #e8d48b);
+      --font-main: 'Noto Serif SC', 'SimSun', serif;
+      --font-display: 'ZCOOL XiaoWei', 'KaiTi', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: transparent;
+      font-family: var(--font-main);
+      color: var(--text-white);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .xiuxian-panel {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .xiuxian-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+    }
+
+    /* === 头部：境界与名称 === */
+    .xj-header {
+      padding: 12px 16px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .xj-name-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .xj-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-gold);
+      letter-spacing: 2px;
+    }
+
+    .xj-realm {
+      font-size: 12px;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .xj-realm-badge {
+      background: rgba(91, 184, 176, 0.15);
+      border: 1px solid rgba(91, 184, 176, 0.3);
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .xj-world-info {
+      text-align: right;
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .xj-location {
+      color: var(--text-sub);
+    }
+
+    /* === 属性条 === */
+    .xj-bars {
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .xj-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .xj-bar-label {
+      font-size: 11px;
+      width: 28px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .xj-bar-track {
+      flex: 1;
+      height: 14px;
+      border-radius: 7px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .xj-bar-track.hp { background: var(--hp-red); }
+    .xj-bar-track.mp { background: var(--mp-blue); }
+    .xj-bar-track.exp { background: var(--exp-gold); }
+
+    .xj-bar-fill {
+      height: 100%;
+      border-radius: 7px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .xj-bar-fill.hp { background: var(--hp-fill); }
+    .xj-bar-fill.mp { background: var(--mp-fill); }
+    .xj-bar-fill.exp { background: var(--exp-fill); }
+
+    .xj-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+      border-radius: 7px 7px 0 0;
+    }
+
+    .xj-bar-text {
+      font-size: 10px;
+      color: var(--text-white);
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      font-weight: 600;
+    }
+
+    /* === 六维属性 === */
+    .xj-attrs {
+      padding: 8px 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px 12px;
+      border-top: 1px solid var(--border-dim);
+    }
+
+    .xj-attr-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .xj-attr-name {
+      color: var(--text-dim);
+    }
+
+    .xj-attr-val {
+      color: var(--text-gold);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* === 灵根/灵石 === */
+    .xj-info-row {
+      padding: 6px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-dim);
+      font-size: 12px;
+    }
+
+    .xj-roots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .xj-root-tag {
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .xj-root-tag.gold { background: rgba(201, 169, 78, 0.2); color: #e8d48b; border: 1px solid rgba(201, 169, 78, 0.4); }
+    .xj-root-tag.wood { background: rgba(90, 158, 90, 0.2); color: #7bc67b; border: 1px solid rgba(90, 158, 90, 0.4); }
+    .xj-root-tag.water { background: rgba(74, 139, 194, 0.2); color: #6ab0e0; border: 1px solid rgba(74, 139, 194, 0.4); }
+    .xj-root-tag.fire { background: rgba(196, 74, 74, 0.2); color: #e06060; border: 1px solid rgba(196, 74, 74, 0.4); }
+    .xj-root-tag.earth { background: rgba(160, 130, 80, 0.2); color: #c9a060; border: 1px solid rgba(160, 130, 80, 0.4); }
+    .xj-root-tag.thunder { background: rgba(160, 120, 220, 0.2); color: #b890e0; border: 1px solid rgba(160, 120, 220, 0.4); }
+    .xj-root-tag.ice { background: rgba(120, 200, 220, 0.2); color: #80d0e0; border: 1px solid rgba(120, 200, 220, 0.4); }
+    .xj-root-tag.wind { background: rgba(150, 200, 150, 0.2); color: #a0d0a0; border: 1px solid rgba(150, 200, 150, 0.4); }
+    .xj-root-tag.dark { background: rgba(100, 80, 140, 0.2); color: #a080c0; border: 1px solid rgba(100, 80, 140, 0.4); }
+    .xj-root-tag.light { background: rgba(220, 200, 150, 0.2); color: #e0d080; border: 1px solid rgba(220, 200, 150, 0.4); }
+
+    .xj-spirit-stones {
+      display: flex;
+      gap: 10px;
+      color: var(--text-dim);
+    }
+
+    .xj-stone {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .xj-stone-icon {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+    }
+
+    .xj-stone-icon.lower { background: #8ab4e8; }
+    .xj-stone-icon.mid { background: #c9a94e; }
+    .xj-stone-icon.upper { background: #e06060; }
+    .xj-stone-icon.top { background: #b060e0; }
+
+    .xj-stone-val {
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+    }
+
+    /* === 技能槽 === */
+    .xj-skills {
+      padding: 8px 16px 10px;
+      border-top: 1px solid var(--border-dim);
+    }
+
+    .xj-skills-title {
+      font-size: 10px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .xj-skill-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .xj-skill-slot {
+      flex: 1;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      padding: 4px 6px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-dim);
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .xj-skill-slot.active {
+      color: var(--text-gold);
+      border-color: rgba(201, 169, 78, 0.5);
+      background: rgba(201, 169, 78, 0.08);
+    }
+
+    .xj-skill-slot.cooling {
+      color: var(--text-sub);
+      opacity: 0.6;
+    }
+
+    /* === 状态效果 === */
+    .xj-buffs {
+      padding: 4px 16px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .xj-buff-tag {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .xj-buff-tag.buff {
+      background: rgba(90, 158, 90, 0.2);
+      color: #7bc67b;
+      border: 1px solid rgba(90, 158, 90, 0.3);
+    }
+
+    .xj-buff-tag.debuff {
+      background: rgba(196, 74, 74, 0.2);
+      color: #e06060;
+      border: 1px solid rgba(196, 74, 74, 0.3);
+    }
+
+    /* === 底部导航 === */
+    .xj-nav {
+      padding: 6px 16px 10px;
+      display: flex;
+      gap: 6px;
+      border-top: 1px solid var(--border-dim);
+    }
+
+    .xj-nav-btn {
+      flex: 1;
+      height: 28px;
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      background: var(--bg-glass);
+      color: var(--text-dim);
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+      font-family: var(--font-main);
+    }
+
+    .xj-nav-btn:hover {
+      background: rgba(201, 169, 78, 0.1);
+      border-color: var(--border-gold);
+      color: var(--text-gold);
+    }
+
+    /* === 响应式 === */
+    @media (max-width: 400px) {
+      .xj-attrs { grid-template-columns: repeat(2, 1fr); }
+      .xj-name { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="xiuxian-panel" id="xiuxian-status">
+    <!-- 头部 -->
+    <div class="xj-header">
+      <div class="xj-name-block">
+        <div class="xj-name" id="xj-name">--</div>
+        <div class="xj-realm">
+          <span class="xj-realm-badge" id="xj-realm">炼气 · 一层</span>
+          <span style="color:var(--text-sub)">Lv.</span><span id="xj-level">1</span>
+        </div>
+      </div>
+      <div class="xj-world-info">
+        <div id="xj-location">凡人界 · 天南大陆</div>
+        <div id="xj-time">玄元历1000年1月1日 清晨</div>
+      </div>
+    </div>
+
+    <!-- 属性条 -->
+    <div class="xj-bars">
+      <div class="xj-bar-row">
+        <span class="xj-bar-label" style="color:var(--accent-red)">气血</span>
+        <div class="xj-bar-track hp">
+          <div class="xj-bar-fill hp" id="xj-hp-fill" style="width:100%"></div>
+          <span class="xj-bar-text" id="xj-hp-text">20/20</span>
+        </div>
+      </div>
+      <div class="xj-bar-row">
+        <span class="xj-bar-label" style="color:var(--accent-blue)">灵力</span>
+        <div class="xj-bar-track mp">
+          <div class="xj-bar-fill mp" id="xj-mp-fill" style="width:100%"></div>
+          <span class="xj-bar-text" id="xj-mp-text">50/50</span>
+        </div>
+      </div>
+      <div class="xj-bar-row">
+        <span class="xj-bar-label" style="color:var(--accent-orange)">修为</span>
+        <div class="xj-bar-track exp">
+          <div class="xj-bar-fill exp" id="xj-exp-fill" style="width:0%"></div>
+          <span class="xj-bar-text" id="xj-exp-text">0/100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 六维属性 -->
+    <div class="xj-attrs">
+      <div class="xj-attr-item"><span class="xj-attr-name">体魄</span><span class="xj-attr-val" id="xj-attr-tp">10</span></div>
+      <div class="xj-attr-item"><span class="xj-attr-name">身法</span><span class="xj-attr-val" id="xj-attr-sf">10</span></div>
+      <div class="xj-attr-item"><span class="xj-attr-name">根骨</span><span class="xj-attr-val" id="xj-attr-gg">10</span></div>
+      <div class="xj-attr-item"><span class="xj-attr-name">悟性</span><span class="xj-attr-val" id="xj-attr-wx">10</span></div>
+      <div class="xj-attr-item"><span class="xj-attr-name">神识</span><span class="xj-attr-val" id="xj-attr-ss">10</span></div>
+      <div class="xj-attr-item"><span class="xj-attr-name">灵力</span><span class="xj-attr-val" id="xj-attr-ll">10</span></div>
+    </div>
+
+    <!-- 灵根 & 灵石 -->
+    <div class="xj-info-row">
+      <div class="xj-roots" id="xj-roots">
+        <span class="xj-root-tag gold">金</span>
+      </div>
+      <div class="xj-spirit-stones">
+        <div class="xj-stone"><div class="xj-stone-icon lower"></div><span class="xj-stone-val" id="xj-stone-l">100</span></div>
+        <div class="xj-stone"><div class="xj-stone-icon mid"></div><span class="xj-stone-val" id="xj-stone-m">0</span></div>
+        <div class="xj-stone"><div class="xj-stone-icon upper"></div><span class="xj-stone-val" id="xj-stone-u">0</span></div>
+        <div class="xj-stone"><div class="xj-stone-icon top"></div><span class="xj-stone-val" id="xj-stone-t">0</span></div>
+      </div>
+    </div>
+
+    <!-- 技能槽 -->
+    <div class="xj-skills">
+      <div class="xj-skills-title">神通槽</div>
+      <div class="xj-skill-row">
+        <div class="xj-skill-slot" id="xj-skill-1">空</div>
+        <div class="xj-skill-slot" id="xj-skill-2">空</div>
+        <div class="xj-skill-slot" id="xj-skill-3">空</div>
+      </div>
+    </div>
+
+    <!-- 状态效果 -->
+    <div class="xj-buffs" id="xj-buffs"></div>
+
+    <!-- 导航按钮 -->
+    <div class="xj-nav">
+      <button class="xj-nav-btn" data-tab="equipment">法宝</button>
+      <button class="xj-nav-btn" data-tab="skills">功法</button>
+      <button class="xj-nav-btn" data-tab="bag">储物</button>
+      <button class="xj-nav-btn" data-tab="bonds">羁绊</button>
+      <button class="xj-nav-btn" data-tab="dao">大道</button>
+    </div>
+  </div>
+
+  <script>
+    function populateData() {
+      try {
+        var allVars = getAllVariables();
+        var d = _.get(allVars, 'stat_data', {});
+        var p = d.人物 || {};
+        var w = d.世界信息 || {};
+
+        // 名称
+        var nameEl = document.getElementById('xj-name');
+        if (nameEl) nameEl.textContent = p.名称 || '无名修士';
+
+        // 境界
+        var realmEl = document.getElementById('xj-realm');
+        if (realmEl) realmEl.textContent = (p.境界 || '炼气') + ' · ' + (p.小境界 || '一层');
+        var levelEl = document.getElementById('xj-level');
+        if (levelEl) levelEl.textContent = p.等级 || 1;
+
+        // 位置
+        var loc = w.位置 || {};
+        var locEl = document.getElementById('xj-location');
+        if (locEl) locEl.textContent = (loc.界域 || '凡人界') + ' · ' + (loc.区域 || '天南大陆');
+        var timeEl = document.getElementById('xj-time');
+        if (timeEl) timeEl.textContent = (w.年历 || '') + ' ' + (w.时间 || '');
+
+        // HP
+        var hp = p.当前生命值 || 0;
+        var maxHp = p.生命值上限 || 1;
+        var hpPct = Math.min(100, Math.round(hp / maxHp * 100));
+        var hpFill = document.getElementById('xj-hp-fill');
+        if (hpFill) hpFill.style.width = hpPct + '%';
+        var hpText = document.getElementById('xj-hp-text');
+        if (hpText) hpText.textContent = hp + '/' + maxHp;
+
+        // MP
+        var mp = p.当前灵力 || 0;
+        var maxMp = p.灵力上限 || 1;
+        var mpPct = maxMp > 0 ? Math.min(100, Math.round(mp / maxMp * 100)) : 0;
+        var mpFill = document.getElementById('xj-mp-fill');
+        if (mpFill) mpFill.style.width = mpPct + '%';
+        var mpText = document.getElementById('xj-mp-text');
+        if (mpText) mpText.textContent = mp + '/' + maxMp;
+
+        // EXP
+        var exp = p.当前总经验 || 0;
+        var maxExp = p.升级阈值 || 100;
+        var expPct = maxExp > 0 ? Math.min(100, Math.round(exp / maxExp * 100)) : 0;
+        var expFill = document.getElementById('xj-exp-fill');
+        if (expFill) expFill.style.width = expPct + '%';
+        var expText = document.getElementById('xj-exp-text');
+        if (expText) expText.textContent = exp + '/' + maxExp;
+
+        // 六维
+        var attrs = p.属性 || {};
+        var attrMap = {'tp':'体魄','sf':'身法','gg':'根骨','wx':'悟性','ss':'神识','ll':'灵力'};
+        Object.entries(attrMap).forEach(function(pair) {
+          var el = document.getElementById('xj-attr-' + pair[0]);
+          if (el) el.textContent = attrs[pair[1]] || 10;
+        });
+
+        // 灵根
+        var rootsEl = document.getElementById('xj-roots');
+        if (rootsEl) {
+          var roots = (p.灵根 && p.灵根.属性) || ['金'];
+          var rootClassMap = {'金':'gold','木':'wood','水':'water','火':'fire','土':'earth','雷':'thunder','冰':'ice','风':'wind','暗':'dark','光':'light','天灵根':'light','混沌灵根':'dark'};
+          rootsEl.innerHTML = roots.map(function(r) {
+            var cls = rootClassMap[r] || 'gold';
+            return '<span class="xj-root-tag ' + cls + '">' + r + '</span>';
+          }).join('');
+        }
+
+        // 灵石
+        var stones = (d.人物 && d.人物.储物袋 && d.人物.储物袋.灵石) || {};
+        var stoneEl = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val || 0; };
+        stoneEl('xj-stone-l', stones.下品);
+        stoneEl('xj-stone-m', stones.中品);
+        stoneEl('xj-stone-u', stones.上品);
+        stoneEl('xj-stone-t', stones.极品);
+
+        // 技能槽
+        var slots = p.主动技能槽 || {};
+        var slotNames = Object.keys(slots);
+        for (var i = 1; i <= 3; i++) {
+          var el = document.getElementById('xj-skill-' + i);
+          if (!el) continue;
+          var sName = slotNames[i-1];
+          var sData = slots[sName];
+          if (sName && sData) {
+            el.textContent = sName;
+            el.className = 'xj-skill-slot' + (sData.冷却中 ? ' cooling' : ' active');
+          } else {
+            el.textContent = '空';
+            el.className = 'xj-skill-slot';
+          }
+        }
+
+        // 状态效果
+        var buffsEl = document.getElementById('xj-buffs');
+        if (buffsEl) {
+          var effects = p.状态效果 || {};
+          var effectHtml = Object.entries(effects).map(function(pair) {
+            var name = pair[0], eff = pair[1] || {};
+            var cls = eff.类型 === '减益' ? 'debuff' : 'buff';
+            return '<span class="xj-buff-tag ' + cls + '">' + name + '</span>';
+          }).join('');
+          buffsEl.innerHTML = effectHtml;
+        }
+      } catch(e) {
+        console.error('[状态栏] 数据加载错误:', e);
+      }
+    }
+
+    async function init() {
+      await waitGlobalInitialized('Mvu');
+      populateData();
+      eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, function() {
+        populateData();
+      });
+    }
+
+    $(errorCatched(init));
+  </script>
+</body>
