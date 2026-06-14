@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>龙族·创意工坊 - 登录回调</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #080a12;
+      color: #e5e0d8;
+      font-family: "Noto Serif SC", serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .status {
+      text-align: center;
+      font-size: 18px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .status.success { color: #10b981; }
+    .status.error { color: #ef4444; }
+    @keyframes fadeIn { to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div class="status" id="status">正在处理登录...</div>
+  <script>
+    (function() {
+      var statusEl = document.getElementById('status');
+
+      try {
+        var hash = window.location.hash.substring(1);
+        var params = new URLSearchParams(hash);
+        var accessToken = params.get('access_token');
+
+        if (!accessToken) {
+          throw new Error('未获取到访问令牌');
+        }
+
+        fetch('https://discord.com/api/users/@me', {
+          headers: { 'Authorization': 'Bearer ' + accessToken }
+        })
+        .then(function(res) {
+          if (!res.ok) throw new Error('获取用户信息失败');
+          return res.json();
+        })
+        .then(function(user) {
+          var userData = {
+            id: user.id,
+            username: user.username,
+            discriminator: user.discriminator || '0',
+            avatar: user.avatar
+              ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png'
+              : 'https://cdn.discordapp.com/embed/avatars/' + (parseInt(user.discriminator || '0') % 5) + '.png'
+          };
+
+          statusEl.textContent = '登录成功：' + userData.username;
+          statusEl.className = 'status success';
+
+          if (window.opener) {
+            window.opener.postMessage({
+              channel: 'creative-workshop:auth',
+              action: 'discordLoginSuccess',
+              user: userData,
+              hash: hash
+            }, '*');
+          }
+
+          setTimeout(function() { window.close(); }, 1500);
+        })
+        .catch(function(err) {
+          statusEl.textContent = '登录失败：' + err.message;
+          statusEl.className = 'status error';
+          if (window.opener) {
+            window.opener.postMessage({
+              channel: 'creative-workshop:auth',
+              action: 'discordLoginError',
+              error: err.message
+            }, '*');
+          }
+        });
+      } catch (err) {
+        statusEl.textContent = '登录失败：' + err.message;
+        statusEl.className = 'status error';
+        if (window.opener) {
+          window.opener.postMessage({
+            channel: 'creative-workshop:auth',
+            action: 'discordLoginError',
+            error: err.message
+          }, '*');
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
