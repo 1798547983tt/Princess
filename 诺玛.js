@@ -243,7 +243,7 @@
             ]
         },
         {
-            id: 'oc', label: 'oc:请大家多多投稿，我好凿你们(不是', icon: 'OC',
+            id: 'oc', label: 'oc（可投稿）', icon: 'OC',
             color: '#fb923c', accent: 'rgba(251,146,60,',
             overview: null,
             chapters: [
