@@ -18,7 +18,6 @@
       min-height: 100vh;
     }
 
-    /* 龙纹暗纹背景 */
     body::before {
       content: '';
       position: fixed;
@@ -38,7 +37,6 @@
       padding: 24px 20px;
     }
 
-    /* 标题栏 */
     .header {
       display: flex;
       align-items: center;
@@ -57,405 +55,152 @@
     }
 
     .dragon-eye {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+      width: 12px; height: 12px; border-radius: 50%;
       background: radial-gradient(circle, #c53030 30%, #8b1a1a 70%);
       box-shadow: 0 0 12px rgba(197,48,48,0.6), 0 0 4px rgba(197,48,48,0.8);
       animation: dragonEyePulse 2s ease-in-out infinite;
     }
 
     @keyframes dragonEyePulse {
-      0%, 100% {
-        box-shadow: 0 0 8px rgba(197,48,48,0.4), 0 0 3px rgba(197,48,48,0.6);
-        background: radial-gradient(circle, #8b1a1a 30%, #5a1010 70%);
-      }
-      50% {
-        box-shadow: 0 0 18px rgba(197,48,48,0.8), 0 0 6px rgba(197,48,48,1);
-        background: radial-gradient(circle, #e53e3e 30%, #c53030 70%);
-      }
+      0%, 100% { box-shadow: 0 0 8px rgba(197,48,48,0.4), 0 0 3px rgba(197,48,48,0.6); background: radial-gradient(circle, #8b1a1a 30%, #5a1010 70%); }
+      50% { box-shadow: 0 0 18px rgba(197,48,48,0.8), 0 0 6px rgba(197,48,48,1); background: radial-gradient(circle, #e53e3e 30%, #c53030 70%); }
     }
 
-    .title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #d4a853;
-      letter-spacing: 0.08em;
-    }
+    .title { font-size: 20px; font-weight: 700; color: #d4a853; letter-spacing: 0.08em; }
 
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
+    .header-actions { display: flex; gap: 8px; }
 
     .btn {
-      appearance: none;
-      border: 1px solid rgba(212,168,83,0.15);
-      border-radius: 10px;
-      padding: 8px 16px;
-      background: rgba(212,168,83,0.06);
-      color: #d4a853;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: inherit;
+      appearance: none; border: 1px solid rgba(212,168,83,0.15); border-radius: 10px;
+      padding: 8px 16px; background: rgba(212,168,83,0.06); color: #d4a853;
+      font-size: 13px; cursor: pointer; transition: all 0.2s ease; font-family: inherit;
     }
-    .btn:hover {
-      background: rgba(212,168,83,0.15);
-      border-color: rgba(212,168,83,0.3);
-      box-shadow: 0 0 12px rgba(212,168,83,0.15);
-    }
+    .btn:hover { background: rgba(212,168,83,0.15); border-color: rgba(212,168,83,0.3); box-shadow: 0 0 12px rgba(212,168,83,0.15); }
 
-    /* 搜索栏 */
-    .search-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 
     .search-input {
-      flex: 1;
-      appearance: none;
-      border: 1px solid rgba(212,168,83,0.12);
-      border-radius: 10px;
-      padding: 10px 16px;
-      background: rgba(8,10,18,0.6);
-      color: #e5e0d8;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: all 0.3s ease;
+      flex: 1; appearance: none; border: 1px solid rgba(212,168,83,0.12); border-radius: 10px;
+      padding: 10px 16px; background: rgba(8,10,18,0.6); color: #e5e0d8;
+      font-size: 14px; font-family: inherit; outline: none; transition: all 0.3s ease;
     }
     .search-input::placeholder { color: #4a4538; }
-    .search-input:focus {
-      border-color: rgba(212,168,83,0.4);
-      box-shadow: 0 0 16px rgba(212,168,83,0.1);
-    }
+    .search-input:focus { border-color: rgba(212,168,83,0.4); box-shadow: 0 0 16px rgba(212,168,83,0.1); }
 
-    /* 分类标签栏 */
-    .categories {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
+    .categories { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
 
     .cat-btn {
-      appearance: none;
-      border: 1px solid rgba(212,168,83,0.1);
-      border-radius: 20px;
-      padding: 6px 18px;
-      background: transparent;
-      color: #7a7568;
-      font-size: 13px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      font-family: inherit;
+      appearance: none; border: 1px solid rgba(212,168,83,0.1); border-radius: 20px;
+      padding: 6px 18px; background: transparent; color: #7a7568;
+      font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; font-family: inherit;
     }
     .cat-btn:hover { color: #d4a853; border-color: rgba(212,168,83,0.25); }
-    .cat-btn.active {
-      background: rgba(212,168,83,0.12);
-      color: #d4a853;
-      border-color: rgba(212,168,83,0.3);
-    }
+    .cat-btn.active { background: rgba(212,168,83,0.12); color: #d4a853; border-color: rgba(212,168,83,0.3); }
 
-    /* Mod 卡片网格 */
-    .mod-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
+    .mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
 
-    /* Mod 卡片 */
     .mod-card {
-      position: relative;
-      border: 1px solid rgba(212,168,83,0.08);
-      border-radius: 14px;
-      padding: 20px;
-      background: rgba(15,23,36,0.6);
-      backdrop-filter: blur(8px);
-      cursor: default;
-      transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
-      opacity: 0;
-      transform: translateY(20px);
+      position: relative; border: 1px solid rgba(212,168,83,0.08); border-radius: 14px;
+      padding: 20px; background: rgba(15,23,36,0.6); backdrop-filter: blur(8px);
+      cursor: default; transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+      opacity: 0; transform: translateY(20px);
     }
-    .mod-card.card-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .mod-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(212,168,83,0.25);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(212,168,83,0.08);
-    }
+    .mod-card.card-visible { opacity: 1; transform: translateY(0); }
+    .mod-card:hover { transform: translateY(-4px); border-color: rgba(212,168,83,0.25); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(212,168,83,0.08); }
 
-    /* 鳞片反光效果 */
     .mod-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 14px;
+      content: ''; position: absolute; inset: 0; border-radius: 14px;
       background: linear-gradient(135deg, transparent 40%, rgba(212,168,83,0.03) 50%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
+      opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
     }
     .mod-card:hover::after { opacity: 1; }
 
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .card-name { font-family: 'Noto Serif SC', serif; font-size: 16px; font-weight: 700; color: #e5e0d8; line-height: 1.4; }
+    .card-version { font-size: 11px; color: #4a4538; background: rgba(212,168,83,0.06); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(212,168,83,0.08); white-space: nowrap; }
+    .card-category { display: inline-block; font-size: 11px; color: #8b1a1a; background: rgba(139,26,26,0.1); padding: 2px 10px; border-radius: 10px; border: 1px solid rgba(139,26,26,0.15); margin-bottom: 8px; }
+    .card-author { font-size: 12px; color: #7a7568; margin-bottom: 8px; }
+    .card-desc { font-size: 13px; color: #9a9488; line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 
-    .card-name {
-      font-family: 'Noto Serif SC', serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: #e5e0d8;
-      line-height: 1.4;
-    }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag { font-size: 11px; color: #7a7568; background: rgba(139,26,26,0.08); padding: 2px 8px; border-radius: 8px; border: 1px solid rgba(139,26,26,0.12); }
 
-    .card-version {
-      font-size: 11px;
-      color: #4a4538;
-      background: rgba(212,168,83,0.06);
-      padding: 2px 8px;
-      border-radius: 10px;
-      border: 1px solid rgba(212,168,83,0.08);
-      white-space: nowrap;
+    .install-btn {
+      appearance: none; border: 1px solid rgba(212,168,83,0.2); border-radius: 10px;
+      padding: 6px 16px; background: linear-gradient(135deg, rgba(212,168,83,0.1), rgba(212,168,83,0.05));
+      color: #d4a853; font-size: 13px; cursor: pointer; transition: all 0.25s ease;
+      position: relative; overflow: hidden; font-family: inherit;
     }
+    .install-btn:hover { background: linear-gradient(135deg, rgba(212,168,83,0.2), rgba(212,168,83,0.1)); box-shadow: 0 0 16px rgba(212,168,83,0.15); border-color: rgba(212,168,83,0.35); }
+    .install-btn.installed { background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.25); }
+    .install-btn:disabled { opacity: 0.5; cursor: default; }
 
-    .card-category {
-      display: inline-block;
-      font-size: 11px;
-      color: #8b1a1a;
-      background: rgba(139,26,26,0.1);
-      padding: 2px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(139,26,26,0.15);
-      margin-bottom: 8px;
-    }
-
-    .card-author {
-      font-size: 12px;
-      color: #7a7568;
-      margin-bottom: 8px;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: #9a9488;
-      line-height: 1.6;
-      margin-bottom: 14px;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .card-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .tag {
-      font-size: 11px;
-      color: #7a7568;
-      background: rgba(139,26,26,0.08);
-      padding: 2px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(139,26,26,0.12);
-    }
-
-    .card-entries {
-      font-size: 11px;
-      color: #4a4538;
-    }
-
-    /* 加载/空状态 */
     .loading, .empty, .error-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 20px;
-      color: #7a7568;
-      font-size: 14px;
-      text-align: center;
-      gap: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 60px 20px; color: #7a7568; font-size: 14px; text-align: center; gap: 12px;
     }
 
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 2px solid rgba(212,168,83,0.1);
-      border-top-color: #d4a853;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+    .spinner { width: 28px; height: 28px; border: 2px solid rgba(212,168,83,0.1); border-top-color: #d4a853; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* 底部 */
     .footer {
-      margin-top: 24px;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid rgba(212,168,83,0.06);
-      border-radius: 12px;
-      background: rgba(8,10,18,0.3);
-      font-size: 12px;
-      color: #4a4538;
+      margin-top: 24px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+      border: 1px solid rgba(212,168,83,0.06); border-radius: 12px; background: rgba(8,10,18,0.3);
+      font-size: 12px; color: #4a4538;
     }
-
-    .footer a {
-      color: #d4a853;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
+    .footer a { color: #d4a853; text-decoration: none; transition: color 0.2s ease; }
     .footer a:hover { color: #e5c06a; }
 
-    /* 通知 */
     .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-10px);
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-size: 13px;
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: 100;
-      pointer-events: none;
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-10px);
+      padding: 10px 24px; border-radius: 12px; font-size: 13px; opacity: 0;
+      transition: all 0.3s ease; z-index: 100; pointer-events: none;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    .toast.success {
-      background: rgba(16,185,129,0.15);
-      color: #10b981;
-      border: 1px solid rgba(16,185,129,0.2);
-    }
-    .toast.error {
-      background: rgba(229,62,62,0.15);
-      color: #ef4444;
-      border: 1px solid rgba(229,62,62,0.2);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+    .toast.error { background: rgba(229,62,62,0.15); color: #ef4444; border: 1px solid rgba(229,62,62,0.2); }
+    .toast.info { background: rgba(212,168,83,0.12); color: #d4a853; border: 1px solid rgba(212,168,83,0.2); }
 
-    /* 详情弹窗 */
     .detail-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(8,10,18,0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+      position: fixed; inset: 0; background: rgba(8,10,18,0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; z-index: 50;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
-    .detail-overlay.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .detail-overlay.visible { opacity: 1; pointer-events: auto; }
 
     .detail-box {
-      background: #0f1724;
-      border: 1px solid rgba(212,168,83,0.15);
-      border-radius: 16px;
-      padding: 28px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      transform: scale(0.9);
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      background: #0f1724; border: 1px solid rgba(212,168,83,0.15); border-radius: 16px;
+      padding: 28px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
+      transform: scale(0.9); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
     }
     .detail-overlay.visible .detail-box { transform: scale(1); }
 
-    .detail-title {
-      font-family: 'Noto Serif SC', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: #d4a853;
-      margin-bottom: 8px;
-    }
+    .detail-title { font-family: 'Noto Serif SC', serif; font-size: 20px; font-weight: 700; color: #d4a853; margin-bottom: 8px; }
+    .detail-meta { font-size: 12px; color: #7a7568; margin-bottom: 16px; }
+    .detail-desc { font-size: 14px; color: #9a9488; line-height: 1.7; margin-bottom: 20px; }
+    .detail-entries-title { font-size: 14px; font-weight: 700; color: #e5e0d8; margin-bottom: 10px; }
 
-    .detail-meta {
-      font-size: 12px;
-      color: #7a7568;
-      margin-bottom: 16px;
-    }
+    .detail-entry { background: rgba(8,10,18,0.5); border: 1px solid rgba(212,168,83,0.06); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+    .detail-entry-name { font-size: 13px; font-weight: 700; color: #d4a853; margin-bottom: 8px; }
+    .detail-entry-content { font-size: 12px; color: #9a9488; line-height: 1.6; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
 
-    .detail-desc {
-      font-size: 14px;
-      color: #9a9488;
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-
-    .detail-entries-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #e5e0d8;
-      margin-bottom: 10px;
-    }
-
-    .detail-entry {
-      background: rgba(8,10,18,0.5);
-      border: 1px solid rgba(212,168,83,0.06);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 10px;
-    }
-
-    .detail-entry-name {
-      font-size: 13px;
-      font-weight: 700;
-      color: #d4a853;
-      margin-bottom: 8px;
-    }
-
-    .detail-entry-content {
-      font-size: 12px;
-      color: #9a9488;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      max-height: 200px;
-      overflow-y: auto;
-    }
+    .detail-actions { display: flex; gap: 10px; margin-top: 16px; }
 
     .detail-close {
-      appearance: none;
-      border: 1px solid rgba(212,168,83,0.15);
-      border-radius: 10px;
-      padding: 8px 24px;
-      background: transparent;
-      color: #7a7568;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      margin-top: 16px;
+      appearance: none; border: 1px solid rgba(212,168,83,0.15); border-radius: 10px;
+      padding: 8px 24px; background: transparent; color: #7a7568; font-size: 13px;
+      cursor: pointer; transition: all 0.2s ease; font-family: inherit;
     }
     .detail-close:hover { color: #d4a853; border-color: rgba(212,168,83,0.3); }
+
+    .detail-install {
+      appearance: none; border: 1px solid rgba(212,168,83,0.2); border-radius: 10px;
+      padding: 8px 24px; background: linear-gradient(135deg, rgba(212,168,83,0.15), rgba(212,168,83,0.05));
+      color: #d4a853; font-size: 13px; cursor: pointer; transition: all 0.25s ease; font-family: inherit;
+    }
+    .detail-install:hover { background: linear-gradient(135deg, rgba(212,168,83,0.25), rgba(212,168,83,0.1)); box-shadow: 0 0 16px rgba(212,168,83,0.15); }
+    .detail-install.installed { background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.25); }
   </style>
 </head>
 <body>
@@ -506,9 +251,16 @@
     var CACHE_TS_KEY = 'dragon_workshop_mods_ts';
     var CACHE_TTL = 5 * 60 * 1000;
 
+    var BRIDGE_CHANNEL = 'creative-workshop:worldbook';
+    var AUTH_CHANNEL = 'creative-workshop:auth';
+
     var allMods = [];
     var currentCategory = '全部';
     var currentSearch = '';
+    var bridgeAvailable = false;
+    var installedMods = {}; // { modId: true }
+    var _requestId = 0;
+    var _pending = {};
 
     // ─── 工具 ─────────────────────────────────────────
     function escHtml(str) {
@@ -520,8 +272,145 @@
     function showToast(msg, type) {
       var toast = document.getElementById('toast');
       toast.textContent = msg;
-      toast.className = 'toast ' + (type || 'success') + ' show';
+      toast.className = 'toast ' + (type || 'info') + ' show';
       setTimeout(function () { toast.className = 'toast'; }, 2500);
+    }
+
+    // ─── 桥接通信 ─────────────────────────────────────
+    function bridgeSend(action, payload) {
+      return new Promise(function (resolve, reject) {
+        var id = 'req_' + (++_requestId);
+        var timeout = setTimeout(function () {
+          delete _pending[id];
+          reject(new Error('桥接请求超时: ' + action));
+        }, 15000);
+        _pending[id] = { resolve: resolve, reject: reject, timeout: timeout };
+        window.parent.postMessage({
+          channel: BRIDGE_CHANNEL,
+          kind: 'request',
+          id: id,
+          action: action,
+          payload: payload || {}
+        }, '*');
+      });
+    }
+
+    function initBridge() {
+      window.addEventListener('message', function (event) {
+        var data = event.data;
+        if (!data) return;
+
+        // 处理桥接响应
+        if (data.channel === BRIDGE_CHANNEL && data.kind === 'response') {
+          var pending = _pending[data.id];
+          if (!pending) return;
+          clearTimeout(pending.timeout);
+          delete _pending[data.id];
+          if (data.ok) pending.resolve(data.payload);
+          else pending.reject(new Error(data.error || '桥接请求失败'));
+        }
+      });
+
+      // 发送握手
+      bridgeSend('handshake').then(function (result) {
+        bridgeAvailable = true;
+        console.log('[创意工坊] 桥接已连接:', result.label);
+        showToast('已连接酒馆', 'success');
+      }).catch(function () {
+        bridgeAvailable = false;
+        console.log('[创意工坊] 桥接不可用，仅展示模式');
+      });
+    }
+
+    // ─── 安装/卸载 ───────────────────────────────────
+    function buildEntryForInstall(mod, entry) {
+      return {
+        name: entry.name || '',
+        content: entry.content || '',
+        enabled: entry.enabled !== false,
+        position: entry.position || { type: 'after_character_definition', role: 'system', depth: 0 },
+        disable: false,
+        key: entry.key || [],
+        selective: entry.selective || false,
+        strategy: entry.strategy || { type: 'constant', keys: [], keys_secondary: { logic: 'and_any', keys: [] }, scan_depth: 'same_as_global' },
+        recursion: entry.recursion || { prevent_incoming: false, prevent_outgoing: false, delay_until: null },
+        effect: entry.effect || { sticky: null, cooldown: null, delay: null },
+        probability: entry.probability != null ? entry.probability : 100,
+        extra: {
+          creativeWorkshop: {
+            sourceId: mod.id,
+            sourceType: 'workshop',
+            sourceTitle: mod.name,
+            sourceUpdatedAt: mod.updated_at || new Date().toISOString(),
+            installedAt: new Date().toISOString(),
+            slot: 'managed'
+          }
+        }
+      };
+    }
+
+    function installMod(mod) {
+      if (!bridgeAvailable) {
+        showToast('未连接酒馆，无法安装', 'error');
+        return Promise.reject(new Error('桥接不可用'));
+      }
+
+      var entries = mod.entries.map(function (e) { return buildEntryForInstall(mod, e); });
+      return bridgeSend('upsertWorkshopEntries', {
+        entries: entries,
+        sourceMeta: { sourceId: mod.id, sourceType: 'workshop' }
+      }).then(function () {
+        installedMods[mod.id] = true;
+        saveInstalledState();
+        showToast('已安装: ' + mod.name, 'success');
+        renderMods();
+      }).catch(function (err) {
+        showToast('安装失败: ' + err.message, 'error');
+        throw err;
+      });
+    }
+
+    function uninstallMod(mod) {
+      if (!bridgeAvailable) {
+        showToast('未连接酒馆，无法卸载', 'error');
+        return Promise.reject(new Error('桥接不可用'));
+      }
+
+      // 先获取所有条目，找到属于该 Mod 的
+      return bridgeSend('getEntries').then(function (result) {
+        var entries = result.entries || [];
+        var uids = [];
+        for (var i = 0; i < entries.length; i++) {
+          var meta = entries[i] && entries[i].extra && entries[i].extra.creativeWorkshop;
+          if (meta && meta.sourceId === mod.id && meta.sourceType === 'workshop') {
+            uids.push(entries[i].uid);
+          }
+        }
+        if (uids.length === 0) {
+          showToast('未找到已安装的条目', 'info');
+          return;
+        }
+        return bridgeSend('deleteEntries', { uids: uids });
+      }).then(function () {
+        delete installedMods[mod.id];
+        saveInstalledState();
+        showToast('已卸载: ' + mod.name, 'success');
+        renderMods();
+      }).catch(function (err) {
+        showToast('卸载失败: ' + err.message, 'error');
+        throw err;
+      });
+    }
+
+    function saveInstalledState() {
+      try { localStorage.setItem('dragon_workshop_installed', JSON.stringify(installedMods)); } catch (e) {}
+    }
+
+    function loadInstalledState() {
+      try {
+        var raw = localStorage.getItem('dragon_workshop_installed');
+        if (raw) installedMods = JSON.parse(raw);
+      } catch (e) {}
     }
 
     // ─── GitHub API ───────────────────────────────────
@@ -537,7 +426,6 @@
       var grid = document.getElementById('modGrid');
       grid.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
 
-      // 检查缓存
       try {
         var cached = localStorage.getItem(CACHE_KEY);
         var cachedTs = localStorage.getItem(CACHE_TS_KEY);
@@ -549,24 +437,16 @@
       } catch (e) {}
 
       fetchJson(GITHUB_API).then(function (files) {
-        var jsonFiles = files.filter(function (f) {
-          return f.type === 'file' && /\.json$/i.test(f.name);
-        });
-
+        var jsonFiles = files.filter(function (f) { return f.type === 'file' && /\.json$/i.test(f.name); });
         return Promise.all(jsonFiles.map(function (f) {
           return fetchJson(f.download_url).catch(function () { return null; });
         }));
       }).then(function (results) {
-        allMods = results.filter(function (m) {
-          return m && m.id && m.name && Array.isArray(m.entries);
-        });
-
-        // 写入缓存
+        allMods = results.filter(function (m) { return m && m.id && m.name && Array.isArray(m.entries); });
         try {
           localStorage.setItem(CACHE_KEY, JSON.stringify(allMods));
           localStorage.setItem(CACHE_TS_KEY, String(Date.now()));
         } catch (e) {}
-
         renderMods();
       }).catch(function (err) {
         grid.innerHTML = '<div class="error-state">加载失败: ' + escHtml(err.message) + '</div>';
@@ -604,7 +484,7 @@
         return catMatch && searchMatch;
       });
 
-      document.getElementById('modCount').textContent = filtered.length + ' 个 Mod';
+      document.getElementById('modCount').textContent = filtered.length + ' 个 Mod' + (bridgeAvailable ? ' · 已连接酒馆' : ' · 仅展示');
 
       if (filtered.length === 0) {
         grid.innerHTML = '<div class="empty">未找到 Mod<span style="font-size:12px;">试试其他分类或关键词</span></div>';
@@ -612,6 +492,7 @@
       }
 
       grid.innerHTML = filtered.map(function (mod, index) {
+        var installed = !!installedMods[mod.id];
         var tagsHtml = (mod.tags || []).slice(0, 4).map(function (t) {
           return '<span class="tag">' + escHtml(t) + '</span>';
         }).join('');
@@ -627,13 +508,14 @@
           '  <div class="card-desc">' + escHtml(mod.description || '') + '</div>' +
           '  <div class="card-footer">' +
           '    <div class="card-tags">' + tagsHtml + '</div>' +
-          '    <span class="card-entries">' + (mod.entries || []).length + ' 个条目</span>' +
+          '    <button class="install-btn ' + (installed ? 'installed' : '') + '" data-mod-id="' + escHtml(mod.id) + '">' +
+               (installed ? '已安装 ✓' : '安装') +
+          '    </button>' +
           '  </div>' +
           '</div>'
         );
       }).join('');
 
-      // 卡片飞入动画
       requestAnimationFrame(function () {
         var cards = grid.querySelectorAll('.mod-card');
         for (var i = 0; i < cards.length; i++) {
@@ -643,10 +525,32 @@
         }
       });
 
+      // 安装/卸载按钮
+      var btns = grid.querySelectorAll('.install-btn');
+      for (var b = 0; b < btns.length; b++) {
+        btns[b].addEventListener('click', function (e) {
+          e.stopPropagation();
+          var modId = this.getAttribute('data-mod-id');
+          var mod = allMods.find(function (m) { return m.id === modId; });
+          if (!mod) return;
+          var btn = this;
+          if (installedMods[modId]) {
+            uninstallMod(mod);
+          } else {
+            btn.textContent = '安装中...';
+            btn.disabled = true;
+            installMod(mod).catch(function () {
+              btn.textContent = '安装';
+              btn.disabled = false;
+            });
+          }
+        });
+      }
+
       // 点击卡片显示详情
       var cards = grid.querySelectorAll('.mod-card');
-      for (var i = 0; i < cards.length; i++) {
-        cards[i].addEventListener('click', function () {
+      for (var c = 0; c < cards.length; c++) {
+        cards[c].addEventListener('click', function () {
           var modId = this.getAttribute('data-mod-id');
           var mod = allMods.find(function (m) { return m.id === modId; });
           if (mod) showDetail(mod);
@@ -657,6 +561,7 @@
     function showDetail(mod) {
       var overlay = document.getElementById('detailOverlay');
       var box = document.getElementById('detailBox');
+      var installed = !!installedMods[mod.id];
 
       var entriesHtml = (mod.entries || []).map(function (e) {
         return (
@@ -678,18 +583,33 @@
         '<div class="detail-desc">' + escHtml(mod.description || '') + '</div>' +
         '<div class="detail-entries-title">世界书条目 (' + (mod.entries || []).length + ')</div>' +
         entriesHtml +
-        '<button class="detail-close" id="detailCloseBtn">关闭</button>';
+        '<div class="detail-actions">' +
+        '  <button class="detail-install ' + (installed ? 'installed' : '') + '" id="detailInstallBtn">' +
+             (installed ? '已安装 ✓ — 点击卸载' : '安装此 Mod') +
+        '  </button>' +
+        '  <button class="detail-close" id="detailCloseBtn">关闭</button>' +
+        '</div>';
 
       overlay.classList.add('visible');
 
       document.getElementById('detailCloseBtn').addEventListener('click', function () {
         overlay.classList.remove('visible');
       });
+
+      document.getElementById('detailInstallBtn').addEventListener('click', function () {
+        if (installedMods[mod.id]) {
+          uninstallMod(mod).then(function () { overlay.classList.remove('visible'); });
+        } else {
+          installMod(mod).then(function () { overlay.classList.remove('visible'); });
+        }
+      });
     }
 
     // ─── 初始化 ───────────────────────────────────────
+    loadInstalledState();
     renderCategories();
     loadMods();
+    initBridge();
 
     document.getElementById('refreshBtn').addEventListener('click', function () {
       try {
@@ -715,5 +635,7 @@
   })();
   </script>
 </body>
+</html>
+
 </html>
 ```
