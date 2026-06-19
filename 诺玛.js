@@ -243,11 +243,14 @@
             ]
         },
         {
-            id: 'oc', label: 'oc（可投稿）', icon: 'OC',
+            id: 'oc', label: 'oc（默认关，可投稿）', icon: 'OC',
             color: '#fb923c', accent: 'rgba(251,146,60,',
             overview: null,
             chapters: [
-                { uid: '222', label: '顾清寒大王' }
+                { uid: '222', label: '顾清寒大王' },
+                { uid: '243', label: '陆棠霜' },
+                { uid: '253', label: '安德烈·阿里克谢耶维奇·契切林' },
+                { uid: '254', label: '加莉娜·谢尔盖耶夫娜·契切林娜' }
             ]
         }
     ];
