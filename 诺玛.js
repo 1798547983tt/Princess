@@ -189,30 +189,6 @@
         }
     ];
 
-    const DLC_SECTIONS = [
-        {
-            id: 'cultivation', label: '修仙', icon: '修',
-            color: '#a78bfa', accent: 'rgba(167,139,250,',
-            overview: { uid: '231', label: '修仙开关' },
-            chapters: [
-                { uid: '252', label: '修仙世界观总纲' },
-                { uid: '244', label: '修仙修炼体系' },
-                { uid: '233', label: '修仙境界系统' },
-                { uid: '247', label: '修仙功法系统' },
-                { uid: '249', label: '修仙本命神通' },
-                { uid: '248', label: '修仙丹药系统' },
-                { uid: '246', label: '修仙灵气复苏' },
-                { uid: '245', label: '修仙灵域体系' },
-                { uid: '236', label: '修仙势力总览' },
-                { uid: '235', label: '修仙心魔系统' },
-                { uid: '234', label: '修仙战力计算公式' },
-                { uid: '250', label: '修仙NPC命名规则' },
-                { uid: '251', label: '修仙封天大阵' },
-                { uid: '232', label: '修仙变量更新规则' }
-            ]
-        }
-    ];
-
     const CHARACTER_SECTIONS = [
         {
             id: 'feminized', label: '娘化', icon: '娘',
@@ -755,7 +731,6 @@
         }
         .panel-tab:hover { color: rgba(220,228,238,0.5); background: rgba(255,255,255,0.01); }
         .panel-tab.active { color: #d4af37; border-bottom-color: #d4af37; }
-        .panel-tab.active.dlc-tab { color: #a78bfa; border-bottom-color: #a78bfa; }
         .panel-tab.active.char-tab { color: #f472b6; border-bottom-color: #f472b6; }
         .panel-tab .tab-icon { margin-right: 6px; font-size: 0.9rem; }
 
@@ -941,7 +916,6 @@
 
         <div class="panel-tabs">
             <div class="panel-tab active" data-page="dragon"><span class="tab-icon">🐉</span>龙族世界书</div>
-            <div class="panel-tab dlc-tab" data-page="dlc"><span class="tab-icon">📦</span>DLC</div>
             <div class="panel-tab char-tab" data-page="characters"><span class="tab-icon">📋</span>人物条目</div>
         </div>
 
@@ -1154,8 +1128,7 @@
         });
 
         let sections;
-        if (pageKey === 'dlc') sections = DLC_SECTIONS;
-        else if (pageKey === 'characters') sections = CHARACTER_SECTIONS;
+        if (pageKey === 'characters') sections = CHARACTER_SECTIONS;
         else sections = BOOK_SECTIONS;
         renderSections(sections, pageKey);
     }
@@ -1172,8 +1145,7 @@
             panel.offsetHeight;
             panel.classList.add('visible');
             let sections;
-            if (currentPage === 'dlc') sections = DLC_SECTIONS;
-            else if (currentPage === 'characters') sections = CHARACTER_SECTIONS;
+            if (currentPage === 'characters') sections = CHARACTER_SECTIONS;
             else sections = BOOK_SECTIONS;
             await renderSections(sections, currentPage);
         } else {
@@ -1194,3 +1166,4 @@
     });
 
 })();
+
