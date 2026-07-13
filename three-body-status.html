@@ -1,0 +1,670 @@
+<div data-tb-mvu-app data-message-id="-1"></div>
+<style data-tb-mvu-style="gravitational-lens-1">.tb-mvu-shell {
+  --tb-space: #06090e;
+  --tb-space-raised: #0b1118;
+  --tb-glass: rgba(14, 26, 34, .72);
+  --tb-line: rgba(132, 211, 211, .18);
+  --tb-lens-cyan: #82d8d2;
+  --tb-lens-hot: #c8ffff;
+  --tb-observer: #a997ff;
+  --tb-risk: #f07a76;
+  --tb-ink: #d2e1e2;
+  --tb-muted: #71858b;
+  --tb-display: "Bahnschrift Condensed", "DIN Alternate", "Microsoft YaHei UI", sans-serif;
+  --tb-body: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 540px;
+  color: var(--tb-ink);
+  color-scheme: dark;
+  background:
+    radial-gradient(circle at 78% 8%, rgba(130, 216, 210, .12), transparent 18rem),
+    radial-gradient(circle at 78% 8%, transparent 0 4.7rem, rgba(200, 255, 255, .15) 4.75rem 4.86rem, transparent 4.92rem),
+    linear-gradient(145deg, #05080d 0%, #09121a 58%, #06090e 100%);
+  border: 1px solid var(--tb-line);
+  border-radius: 22px 8px 22px 8px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .42), inset 0 1px rgba(255, 255, 255, .035);
+  font-family: var(--tb-body);
+}
+
+.tb-mvu-shell *, .tb-mvu-shell *::before, .tb-mvu-shell *::after { box-sizing: border-box; }
+.tb-mvu-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .22;
+  background-image: linear-gradient(var(--tb-line) 1px, transparent 1px), linear-gradient(90deg, var(--tb-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at 78% 8%, black, transparent 68%);
+}
+.tb-mvu-shell::after {
+  content: "三体观测阵列 / TB–MVU";
+  position: absolute;
+  right: 24px;
+  bottom: 16px;
+  z-index: -1;
+  color: rgba(130, 216, 210, .12);
+  font: 600 .62rem var(--tb-display);
+  letter-spacing: .24em;
+  writing-mode: vertical-rl;
+}
+
+.tb-mvu-observation-strip {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 25px 28px 20px;
+  border-bottom: 1px solid var(--tb-line);
+}
+.tb-mvu-orbit-mark {
+  position: relative;
+  width: 58px;
+  aspect-ratio: 1;
+  border: 1px solid var(--tb-lens-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px rgba(130, 216, 210, .04), inset 0 0 18px rgba(130, 216, 210, .12);
+  animation: tb-mvu-orbit-reveal 900ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.tb-mvu-orbit-mark::before { content: ""; position: absolute; inset: 9px -10px; border-block: 1px solid rgba(130, 216, 210, .24); transform: rotate(-28deg); }
+.tb-mvu-orbit-mark::after { content: ""; position: absolute; width: 6px; height: 6px; top: 6px; left: 10px; border-radius: 50%; background: var(--tb-lens-hot); box-shadow: 0 0 16px var(--tb-lens-cyan); }
+.tb-mvu-kicker, .tb-mvu-coordinate { margin: 0; color: var(--tb-muted); font: 600 .72rem/1.4 var(--tb-display); letter-spacing: .18em; text-transform: uppercase; }
+.tb-mvu-observation-strip h1 { margin: .2rem 0; font: 560 clamp(1.4rem, 2.4vw, 2.25rem)/1.05 var(--tb-display); letter-spacing: .04em; }
+
+.tb-mvu-observer-button, .tb-mvu-nav button, .tb-mvu-dialog button {
+  min-height: 44px;
+  color: var(--tb-ink);
+  background: rgba(7, 14, 20, .72);
+  border: 1px solid var(--tb-line);
+  font: 600 .78rem var(--tb-display);
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+.tb-mvu-observer-button { padding: 0 17px; border-radius: 999px; }
+.tb-mvu-observer-button:is(:hover, :focus-visible) { color: var(--tb-lens-hot); border-color: var(--tb-lens-cyan); outline: none; box-shadow: 0 0 24px rgba(130, 216, 210, .1); }
+.tb-mvu-shell--observer { --tb-line: rgba(169, 151, 255, .28); box-shadow: 0 28px 80px rgba(0, 0, 0, .42), inset 0 0 80px rgba(169, 151, 255, .035); }
+.tb-mvu-shell--observer .tb-mvu-observer-button { color: #ddd5ff; border-color: var(--tb-observer); }
+
+.tb-mvu-toolbar { display: flex; align-items: end; gap: 8px; padding: 10px 18px; border-bottom: 1px solid var(--tb-line); background: rgba(4, 9, 14, .5); overflow-x: auto; scrollbar-width: thin; }
+.tb-mvu-toolbar label { display: grid; gap: 3px; color: var(--tb-muted); font: 600 .64rem var(--tb-display); letter-spacing: .12em; }
+.tb-mvu-toolbar input, .tb-mvu-toolbar select, .tb-mvu-toolbar button, .tb-mvu-pager button {
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--tb-ink);
+  background: rgba(7, 14, 20, .82);
+  border: 1px solid var(--tb-line);
+  border-radius: 4px 11px;
+  font: 600 .72rem var(--tb-display);
+}
+.tb-mvu-toolbar input { min-width: 190px; }
+.tb-mvu-toolbar :is(input, select, button):focus-visible, .tb-mvu-pager button:focus-visible { border-color: var(--tb-lens-cyan); outline: 2px solid rgba(130, 216, 210, .18); outline-offset: 2px; }
+.tb-mvu-toolbar button, .tb-mvu-pager button { cursor: pointer; }
+
+.tb-mvu-workspace { display: grid; grid-template-columns: 190px minmax(0, 1fr); min-height: 440px; }
+.tb-mvu-nav { display: flex; flex-direction: column; gap: 4px; padding: 18px 12px; border-right: 1px solid var(--tb-line); }
+.tb-mvu-nav button { padding: 0 14px; text-align: left; color: var(--tb-muted); border-color: transparent; border-radius: 4px 14px 4px 4px; }
+.tb-mvu-nav button:is(:hover, :focus-visible, .is-active) { color: var(--tb-lens-hot); border-color: var(--tb-line); background: linear-gradient(90deg, rgba(130, 216, 210, .1), transparent); outline: none; }
+.tb-mvu-stage { min-width: 0; padding: clamp(18px, 3vw, 34px); }
+.tb-mvu-overview, .tb-mvu-card-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+.tb-mvu-card {
+  grid-column: span 4;
+  min-width: 0;
+  padding: 17px;
+  background: linear-gradient(135deg, rgba(17, 32, 41, .84), rgba(9, 17, 24, .58));
+  border: 1px solid var(--tb-line);
+  border-radius: 4px 16px 4px 16px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .025);
+  animation: tb-mvu-rise 520ms both;
+}
+.tb-mvu-card:nth-child(3n + 2) { animation-delay: 45ms; }
+.tb-mvu-card:nth-child(3n) { animation-delay: 90ms; }
+.tb-mvu-card h3, .tb-mvu-record-section h2 { margin: 0 0 .7rem; color: var(--tb-lens-cyan); font: 600 .78rem var(--tb-display); letter-spacing: .13em; }
+.tb-mvu-card p { margin: 0; color: var(--tb-ink); font-size: .85rem; line-height: 1.75; overflow-wrap: anywhere; white-space: pre-wrap; }
+.tb-mvu-lightcone { grid-column: 1 / -1; overflow: auto; border-block: 1px solid var(--tb-line); background: radial-gradient(ellipse at center, rgba(130, 216, 210, .06), transparent 64%); }
+.tb-mvu-lightcone svg { min-width: 720px; width: 100%; transform-origin: top left; }
+.tb-mvu-causal-edge { fill: none; stroke: rgba(130, 216, 210, .35); stroke-width: 1.2; }
+.tb-mvu-causal-edge--被阻断, .tb-mvu-causal-edge--被反转 { stroke: var(--tb-risk); stroke-dasharray: 5 6; }
+.tb-mvu-causal-node circle { fill: var(--tb-space); stroke: var(--tb-lens-hot); stroke-width: 2; }
+.tb-mvu-causal-node text { fill: var(--tb-ink); font: 13px var(--tb-display); }
+.tb-mvu-empty { color: var(--tb-muted); font-style: italic; }
+.tb-mvu-panel-error { padding: 18px; color: var(--tb-risk); border: 1px solid rgba(240, 122, 118, .35); border-radius: 4px 16px; background: rgba(77, 24, 25, .12); }
+.tb-mvu-pager { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 18px; color: var(--tb-muted); font: 600 .72rem var(--tb-display); }
+.tb-mvu-pager button:disabled { opacity: .35; cursor: not-allowed; }
+
+.tb-mvu-dialog-backdrop { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(2, 4, 8, .78); backdrop-filter: blur(10px); }
+.tb-mvu-dialog { max-width: 480px; padding: 28px; border: 1px solid rgba(169, 151, 255, .55); border-radius: 20px 5px; background: #0b1019; box-shadow: 0 0 60px rgba(169, 151, 255, .12); }
+.tb-mvu-dialog h2 { color: #d8d0ff; font-family: var(--tb-display); }
+.tb-mvu-dialog p { color: var(--tb-ink); line-height: 1.8; }
+.tb-mvu-dialog button { margin: 8px 8px 0 0; padding: 0 16px; }
+
+@keyframes tb-mvu-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes tb-mvu-orbit-reveal { from { opacity: 0; transform: scale(.72) rotate(-35deg); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 720px) {
+  .tb-mvu-shell { min-height: 620px; border-radius: 14px 4px; }
+  .tb-mvu-observation-strip { grid-template-columns: 46px 1fr; padding: 16px; }
+  .tb-mvu-orbit-mark { width: 38px; }
+  .tb-mvu-observer-button { grid-column: 1 / -1; width: 100%; }
+  .tb-mvu-toolbar { padding-inline: 10px; }
+  .tb-mvu-toolbar input { min-width: 160px; }
+  .tb-mvu-workspace { display: flex; flex-direction: column-reverse; }
+  .tb-mvu-stage { padding: 16px 12px 82px; }
+  .tb-mvu-nav { position: absolute; z-index: 10; inset: auto 0 0; flex-direction: row; overflow-x: auto; border: 0; border-top: 1px solid var(--tb-line); background: rgba(5, 9, 14, .94); padding: 8px; }
+  .tb-mvu-nav button { flex: 0 0 auto; padding: 0 13px; text-align: center; }
+  .tb-mvu-card { grid-column: 1 / -1; }
+  .tb-mvu-lightcone svg { min-width: 620px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-mvu-shell *, .tb-mvu-shell *::before, .tb-mvu-shell *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+</style>
+<script>(() => {
+  // src/ui/data/read-mvu.js
+  function readMessageStatData(messageId, mvu = globalThis.Mvu) {
+    if (!mvu || typeof mvu.getMvuData !== "function") throw new Error("MVU_UNAVAILABLE");
+    const result = mvu.getMvuData({ type: "message", message_id: messageId });
+    const statData = result?.stat_data;
+    return statData && typeof statData === "object" && !Array.isArray(statData) ? structuredClone(statData) : {};
+  }
+  function subscribeToVariableUpdates(listener, env = globalThis) {
+    const event = env.Mvu?.events?.VARIABLE_UPDATE_ENDED;
+    if (!event || typeof env.eventOn !== "function" || typeof listener !== "function") return () => {
+    };
+    env.eventOn(event, listener);
+    let active = true;
+    return () => {
+      if (!active) return;
+      active = false;
+      env.eventOff?.(event, listener);
+    };
+  }
+
+  // src/ui/privacy/project-view.js
+  var HIDDEN_VISIBILITY = /* @__PURE__ */ new Set(["受限", "秘密", "观测者"]);
+  function filterVisible(value) {
+    if (Array.isArray(value)) return value.map(filterVisible).filter((item) => item !== void 0);
+    if (!value || typeof value !== "object") return value;
+    if (HIDDEN_VISIBILITY.has(value.可见性) || HIDDEN_VISIBILITY.has(value.公开性)) return void 0;
+    return Object.fromEntries(Object.entries(value).flatMap(([key, child]) => {
+      const filtered = filterVisible(child);
+      return filtered === void 0 ? [] : [[key, filtered]];
+    }));
+  }
+  function removeKeys(value, keys) {
+    if (!value || typeof value !== "object") return;
+    for (const key of keys) delete value[key];
+  }
+  function sanitizePeople(view) {
+    for (const person of Object.values(view.人物 ?? {})) {
+      removeKeys(person, ["真实内层", "知识", "行动能力", "连续性", "特殊扩展"]);
+    }
+  }
+  function sanitizeRelations(view) {
+    const hidden = [
+      "真实立场",
+      "隐藏关系",
+      "欺骗",
+      "共享秘密",
+      "可泄露范围",
+      "保密义务",
+      "背叛条件",
+      "监控",
+      "敏感点",
+      "变化原因",
+      "关联因果节点"
+    ];
+    for (const relation of Object.values(view.关系 ?? {})) {
+      removeKeys(relation, hidden);
+      if (relation.主体 !== "主角") removeKeys(relation, ["主体对客体身份或目标的了解", "误信", "怀疑", "未知"]);
+    }
+  }
+  function sanitizeOrganizations(view) {
+    for (const [id, organization] of Object.entries(view.组织 ?? {})) {
+      if (HIDDEN_VISIBILITY.has(organization.公开或秘密状态)) {
+        delete view.组织[id];
+        continue;
+      }
+      removeKeys(organization.战略, ["真实目标"]);
+      removeKeys(organization.信息与观念, ["秘密", "欺骗", "情报覆盖", "泄密"]);
+      removeKeys(organization.治理, ["渗透", "内部派系"]);
+    }
+  }
+  function sanitizeTechnologies(view) {
+    for (const technology of Object.values(view.科技 ?? {})) {
+      if (HIDDEN_VISIBILITY.has(technology.知识传播?.公开程度)) {
+        removeKeys(technology, ["知识传播", "研发", "前置与瓶颈", "部署"]);
+      }
+    }
+  }
+  function sanitizeCivilizations(view) {
+    for (const civilization of Object.values(view.文明 ?? {})) {
+      removeKeys(civilization.坐标与暴露, ["真实坐标", "未知观察者投影"]);
+    }
+  }
+  function sanitizeAssets(view) {
+    for (const [id, asset] of Object.entries(view.资产 ?? {})) {
+      if (HIDDEN_VISIBILITY.has(asset.保密等级)) {
+        delete view.资产[id];
+        continue;
+      }
+      removeKeys(asset.权属, ["实际控制者", "访问者", "授权条件", "争议权属", "夺取风险"]);
+      removeKeys(asset.能力与保障, ["弱点"]);
+    }
+  }
+  function sanitizeMessages(view) {
+    for (const message of Object.values(view.通讯 ?? {})) {
+      const content = message.内容与认知;
+      if (content && HIDDEN_VISIBILITY.has(content.保密等级)) delete content.完整内容;
+      removeKeys(content, ["接收者理解", "产生知识", "产生误信"]);
+      removeKeys(message.安全, ["截获者", "窃听者", "篡改"]);
+    }
+  }
+  function sanitizeEvents(view) {
+    for (const event of Object.values(view.事件 ?? {})) {
+      removeKeys(event.执行, ["秘密参与者"]);
+      removeKeys(event.因果, ["未来投影"]);
+    }
+  }
+  function sanitizeCausality(view) {
+    const causality = view.因果;
+    if (!causality || typeof causality !== "object") return;
+    const nodeIds = new Set(Object.keys(causality.节点 ?? {}));
+    causality.边 = Object.fromEntries(Object.entries(causality.边 ?? {}).filter(([, edge]) => nodeIds.has(edge.起点) && nodeIds.has(edge.终点)));
+    causality.主链 = (causality.主链 ?? []).filter((id) => nodeIds.has(id));
+    causality.分支 = Object.fromEntries(Object.entries(causality.分支 ?? {}).flatMap(([id, branch]) => {
+      if (branch.起点节点 && !nodeIds.has(branch.起点节点)) return [];
+      if (Array.isArray(branch.当前端点)) branch.当前端点 = branch.当前端点.filter((nodeId) => nodeIds.has(nodeId));
+      return [[id, branch]];
+    }));
+    causality.延迟效应 = Object.fromEntries(Object.entries(causality.延迟效应 ?? {}).filter(([, effect]) => !effect.来源节点 || nodeIds.has(effect.来源节点)));
+  }
+  function sanitizeTasks(view) {
+    for (const task of Object.values(view.任务与记忆?.任务 ?? {})) removeKeys(task, ["真实目标"]);
+  }
+  function projectFiniteView(statData) {
+    const view = filterVisible(structuredClone(statData ?? {})) ?? {};
+    delete view.$系统;
+    if (view.场景) delete view.场景.秘密观察者;
+    sanitizePeople(view);
+    sanitizeRelations(view);
+    sanitizeOrganizations(view);
+    sanitizeCivilizations(view);
+    sanitizeTechnologies(view);
+    sanitizeAssets(view);
+    sanitizeMessages(view);
+    sanitizeEvents(view);
+    sanitizeCausality(view);
+    sanitizeTasks(view);
+    if (view.世界线) delete view.世界线.未来投影;
+    return view;
+  }
+  function projectObserverView(statData) {
+    return structuredClone(statData ?? {});
+  }
+
+  // src/ui/state/store.js
+  var INITIAL = Object.freeze({ observerEnabled: false, observerWarningOpen: false, panel: "overview", query: "", lifecycleFilter: "全部", pinned: [], causalScale: 1, archivePage: 1, collapsed: false });
+  function snapshotOf(state) {
+    return Object.freeze({
+      ...state,
+      pinned: Object.freeze([...state.pinned ?? []])
+    });
+  }
+  function nextState(current, patch) {
+    if (!patch || typeof patch !== "object" || Array.isArray(patch)) return current;
+    return {
+      ...current,
+      ...patch,
+      pinned: Array.isArray(patch.pinned) ? [...patch.pinned] : [...current.pinned]
+    };
+  }
+  function createUiStore() {
+    let state = { ...INITIAL, pinned: [] };
+    const listeners = /* @__PURE__ */ new Set();
+    const notify = () => {
+      const snapshot = snapshotOf(state);
+      for (const listener of listeners) listener(snapshot);
+    };
+    return {
+      get: () => snapshotOf(state),
+      set: (patch) => {
+        state = nextState(state, patch);
+        notify();
+      },
+      subscribe: (listener) => {
+        if (typeof listener !== "function") return () => {
+        };
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+      reset: () => {
+        state = { ...INITIAL, pinned: [] };
+        notify();
+      }
+    };
+  }
+
+  // src/ui/render/dom.js
+  var UNSAFE_TAGS = /* @__PURE__ */ new Set(["base", "embed", "iframe", "link", "meta", "object", "script", "style"]);
+  var URL_ATTRIBUTES = /* @__PURE__ */ new Set(["action", "formaction", "href", "src", "xlink:href"]);
+  function isSafeAttribute(name, value) {
+    const normalized = name.toLowerCase();
+    if (normalized === "srcdoc" || normalized === "style" || normalized.startsWith("on")) return false;
+    if (!URL_ATTRIBUTES.has(normalized)) return true;
+    const url = String(value).trim().replace(/[\u0000-\u0020]+/gu, "").toLowerCase();
+    return !url.startsWith("javascript:") && !url.startsWith("data:text/html");
+  }
+  function el(document2, tag, { className = "", text, attrs = {}, children = [] } = {}) {
+    const normalizedTag = String(tag).trim().toLowerCase();
+    if (UNSAFE_TAGS.has(normalizedTag)) throw new Error("UNSAFE_TAG");
+    const node = document2.createElement(normalizedTag);
+    if (className) node.className = className;
+    if (text !== void 0) node.textContent = String(text);
+    for (const [name, value] of Object.entries(attrs)) {
+      if (value === false || value == null) continue;
+      if (!isSafeAttribute(name, value)) continue;
+      node.setAttribute(name, value === true ? "" : String(value));
+    }
+    node.append(...children.filter(Boolean));
+    return node;
+  }
+  function clear(node) {
+    node.replaceChildren();
+  }
+  function entries(record) {
+    return Object.entries(record ?? {});
+  }
+  function valueText(value, fallback = "暂无记录") {
+    if (value == null || value === "" || Array.isArray(value) && value.length === 0) return fallback;
+    if (typeof value === "object") {
+      try {
+        return JSON.stringify(value);
+      } catch {
+        return "此记录损坏，其他观测区仍可使用";
+      }
+    }
+    return String(value);
+  }
+
+  // src/ui/render/causal-light-cone.js
+  function edgeClass(state) {
+    const token = String(state ?? "候选").replace(/[^\p{L}\p{N}_-]/gu, "-");
+    return `tb-mvu-causal-edge tb-mvu-causal-edge--${token || "候选"}`;
+  }
+  function renderCausalLightCone(document2, causality = {}, scale = 1) {
+    const safeScale = Number.isFinite(scale) ? Math.min(1.8, Math.max(0.6, scale)) : 1;
+    const wrap = el(document2, "div", {
+      className: "tb-mvu-lightcone",
+      attrs: { "data-causal-scale": safeScale }
+    });
+    const nodes = entries(causality?.节点).slice(0, 24);
+    if (!nodes.length) {
+      wrap.append(el(document2, "p", { className: "tb-mvu-empty", text: "当前视角暂无已知因果节点" }));
+      return wrap;
+    }
+    const width = 880;
+    const height = Math.max(260, nodes.length * 52);
+    const svgNamespace = document2.documentElement.namespaceURI.replace("1999/xhtml", "2000/svg");
+    const svg = document2.createElementNS(svgNamespace, "svg");
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    svg.setAttribute("aria-label", "当前因果链");
+    svg.style.transform = `scale(${safeScale})`;
+    const positions = new Map(nodes.map(([id], index) => [id, {
+      x: 120 + index % 3 * 300,
+      y: 56 + index * 48
+    }]));
+    for (const edge of Object.values(causality?.边 ?? {})) {
+      if (!edge || typeof edge !== "object") continue;
+      const from = positions.get(edge.起点);
+      const to = positions.get(edge.终点);
+      if (!from || !to) continue;
+      const line = document2.createElementNS(svg.namespaceURI, "path");
+      line.setAttribute("d", `M ${from.x} ${from.y} Q ${width / 2} ${(from.y + to.y) / 2} ${to.x} ${to.y}`);
+      line.setAttribute("class", edgeClass(edge.状态));
+      svg.append(line);
+    }
+    for (const [id, node] of nodes) {
+      const pos = positions.get(id);
+      const group = document2.createElementNS(svg.namespaceURI, "g");
+      group.setAttribute("class", "tb-mvu-causal-node");
+      group.setAttribute("transform", `translate(${pos.x} ${pos.y})`);
+      const circle = document2.createElementNS(svg.namespaceURI, "circle");
+      circle.setAttribute("r", "7");
+      const label = document2.createElementNS(svg.namespaceURI, "text");
+      label.setAttribute("x", "16");
+      label.setAttribute("y", "5");
+      label.textContent = node?.标题 || id;
+      group.append(circle, label);
+      svg.append(group);
+    }
+    wrap.append(svg);
+    return wrap;
+  }
+
+  // src/ui/render/panels.js
+  var PANELS = Object.freeze([
+    ["overview", "总览"],
+    ["protagonist", "主角"],
+    ["people", "人物关系"],
+    ["civilization", "组织文明"],
+    ["technology", "科技资产"],
+    ["events", "事件时间线"],
+    ["causality", "因果网络"],
+    ["comms", "通讯任务"],
+    ["archive", "归档检索"]
+  ]);
+  function card(document2, title, value) {
+    return el(document2, "section", { className: "tb-mvu-card", children: [
+      el(document2, "h3", { text: title }),
+      el(document2, "p", { text: valueText(value) })
+    ] });
+  }
+  function searchableText(key, value) {
+    try {
+      return `${key}${JSON.stringify(value)}`.toLowerCase();
+    } catch {
+      return String(key).toLowerCase();
+    }
+  }
+  function lifecycleOf(value) {
+    return value?.状态?.生命周期 ?? value?.生命周期 ?? "活跃";
+  }
+  function recordGrid(document2, title, record, ui) {
+    const normalized = String(ui.query ?? "").trim().toLowerCase();
+    const lifecycleFilter = ui.lifecycleFilter ?? "全部";
+    const rows = entries(record).filter(([key, value]) => {
+      const queryMatches = !normalized || searchableText(key, value).includes(normalized);
+      const lifecycleMatches = lifecycleFilter === "全部" || lifecycleOf(value) === lifecycleFilter;
+      return queryMatches && lifecycleMatches;
+    });
+    const pageSize = 12;
+    const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+    const requestedPage = Number.isInteger(ui.archivePage) ? ui.archivePage : 1;
+    const page = Math.max(1, Math.min(requestedPage, pageCount));
+    const visible = rows.slice((page - 1) * pageSize, page * pageSize);
+    const section = el(document2, "section", {
+      className: "tb-mvu-record-section",
+      children: [el(document2, "h2", { text: title })]
+    });
+    if (!visible.length) {
+      section.append(el(document2, "p", { className: "tb-mvu-empty", text: "暂无记录" }));
+    } else {
+      section.append(el(document2, "div", {
+        className: "tb-mvu-card-grid",
+        children: visible.map(([key, value]) => card(document2, key, value))
+      }));
+    }
+    section.append(el(document2, "footer", { className: "tb-mvu-pager", children: [
+      el(document2, "button", { text: "上一页", attrs: { type: "button", "data-action": "page-prev", disabled: page <= 1 } }),
+      el(document2, "span", { text: `${page} / ${pageCount}` }),
+      el(document2, "button", { text: "下一页", attrs: { type: "button", "data-action": "page-next", disabled: page >= pageCount } })
+    ] }));
+    return section;
+  }
+  function renderPanel(document2, panel, data = {}, ui = {}) {
+    if (panel === "overview") return el(document2, "div", { className: "tb-mvu-overview", children: [
+      card(document2, "当前观测", `${valueText(data.时空?.公元时间)} · ${valueText(data.时空?.当前地点)}`),
+      card(document2, "场景", data.场景?.标题),
+      card(document2, "世界线", data.世界线?.分类),
+      ...data.$系统 ? [
+        card(document2, "秘密观察者", data.场景?.秘密观察者),
+        card(document2, "未来投影", data.世界线?.未来投影),
+        card(document2, "完整性诊断", data.$系统?.完整性状态)
+      ] : [],
+      renderCausalLightCone(document2, data.因果, ui.causalScale)
+    ] });
+    if (panel === "protagonist") return recordGrid(document2, "主角与记忆", { 主角: data.主角, 任务与记忆: data.任务与记忆 }, ui);
+    if (panel === "people") return recordGrid(document2, "人物与方向关系", { ...data.人物 ?? {}, ...data.关系 ?? {} }, ui);
+    if (panel === "civilization") return recordGrid(document2, "组织与文明", { ...data.组织 ?? {}, ...data.文明 ?? {} }, ui);
+    if (panel === "technology") return recordGrid(document2, "科技与资产", { ...data.科技 ?? {}, ...data.资产 ?? {} }, ui);
+    if (panel === "events") return recordGrid(document2, "事件时间线", data.事件, ui);
+    if (panel === "causality") return renderCausalLightCone(document2, data.因果, ui.causalScale);
+    if (panel === "comms") return recordGrid(document2, "通讯、任务与诊断", { ...data.通讯 ?? {}, ...data.任务与记忆?.任务 ?? {}, ...data.$系统?.错误诊断 ?? {} }, ui);
+    const archive = data.$系统?.索引?.归档 ?? [];
+    const archiveRecord = Array.isArray(archive) ? Object.fromEntries(archive.map((path) => [path, { 生命周期: "归档" }])) : archive;
+    return recordGrid(document2, "休眠与归档索引", archiveRecord, ui);
+  }
+
+  // src/ui/app.js
+  function mountThreeBodyStatus(root, adapters = {}) {
+    if (!root?.ownerDocument) throw new TypeError("STATUS_ROOT_REQUIRED");
+    if (typeof root.__tbMvuCleanup === "function") root.__tbMvuCleanup();
+    const document2 = root.ownerDocument;
+    const messageId = Number(root.dataset.messageId ?? -1);
+    const read = adapters.read ?? (() => readMessageStatData(messageId));
+    const subscribe = adapters.subscribe ?? ((listener) => subscribeToVariableUpdates(listener));
+    const store = createUiStore();
+    let source = read();
+    let destroyed = false;
+    function render() {
+      if (destroyed) return;
+      const ui = store.get();
+      const panel = PANELS.some(([id]) => id === ui.panel) ? ui.panel : "overview";
+      const data = ui.observerEnabled ? projectObserverView(source) : projectFiniteView(source);
+      let panelContent;
+      try {
+        panelContent = renderPanel(document2, panel, data, ui);
+      } catch (error) {
+        panelContent = el(document2, "section", { className: "tb-mvu-panel-error", children: [
+          el(document2, "h2", { text: "此观测区暂时无法解析" }),
+          el(document2, "p", { text: String(error?.message ?? error) })
+        ] });
+      }
+      clear(root);
+      root.className = `tb-mvu-shell${ui.observerEnabled ? " tb-mvu-shell--observer" : ""}`;
+      root.append(el(document2, "header", { className: "tb-mvu-observation-strip", children: [
+        el(document2, "div", { className: "tb-mvu-orbit-mark", attrs: { "aria-hidden": "true" } }),
+        el(document2, "div", { children: [
+          el(document2, "p", { className: "tb-mvu-kicker", text: data.时空?.主纪元 || "未定纪元" }),
+          el(document2, "h1", { text: data.场景?.标题 || "开局坐标待初始化" }),
+          el(document2, "p", { className: "tb-mvu-coordinate", text: `${data.时空?.公元时间 || "时间未知"} · ${data.时空?.当前地点 || "地点未知"} · ${data.时空?.时间可信精度 || "精度未知"}` })
+        ] }),
+        el(document2, "button", {
+          className: "tb-mvu-observer-button",
+          text: ui.observerEnabled ? "关闭观测者权限" : "观测者权限",
+          attrs: { type: "button", "data-action": "observer", "aria-pressed": ui.observerEnabled }
+        })
+      ] }));
+      const lifecycleSelect = el(document2, "select", {
+        attrs: { "data-control": "lifecycle", "aria-label": "生命周期层级" },
+        children: ["全部", "活跃", "休眠", "归档"].map((value) => el(document2, "option", { text: value, attrs: { value } }))
+      });
+      lifecycleSelect.value = ui.lifecycleFilter;
+      root.append(el(document2, "div", { className: "tb-mvu-toolbar", children: [
+        el(document2, "label", { children: [
+          el(document2, "span", { text: "检索" }),
+          el(document2, "input", { attrs: { type: "search", value: ui.query, placeholder: "人物、事件、因果…", "data-control": "query" } })
+        ] }),
+        el(document2, "label", { children: [el(document2, "span", { text: "层级" }), lifecycleSelect] }),
+        el(document2, "button", { text: ui.pinned.includes(panel) ? "取消钉住" : "钉住面板", attrs: { type: "button", "data-action": "pin" } }),
+        el(document2, "button", { text: "缩小因果图", attrs: { type: "button", "data-action": "zoom-out" } }),
+        el(document2, "button", { text: "放大因果图", attrs: { type: "button", "data-action": "zoom-in" } }),
+        el(document2, "button", { text: ui.collapsed ? "展开状态栏" : "折叠状态栏", attrs: { type: "button", "data-action": "collapse", "aria-expanded": !ui.collapsed } })
+      ] }));
+      if (!ui.collapsed) root.append(el(document2, "div", { className: "tb-mvu-workspace", children: [
+        el(document2, "nav", {
+          className: "tb-mvu-nav",
+          attrs: { "aria-label": "状态栏领域" },
+          children: PANELS.map(([id, label]) => el(document2, "button", {
+            className: id === panel ? "is-active" : "",
+            text: `${label}${ui.pinned.includes(id) ? " ·" : ""}`,
+            attrs: { type: "button", "data-panel": id, "aria-current": id === panel ? "page" : null }
+          }))
+        }),
+        el(document2, "main", { className: "tb-mvu-stage", children: [
+          el(document2, "div", { attrs: { "data-panel-rendered": panel }, children: [panelContent] })
+        ] })
+      ] }));
+      if (ui.observerWarningOpen) root.append(el(document2, "div", { className: "tb-mvu-dialog-backdrop", children: [
+        el(document2, "section", { className: "tb-mvu-dialog", attrs: { role: "dialog", "aria-modal": "true", "aria-labelledby": "tb-mvu-warning-title" }, children: [
+          el(document2, "h2", { text: "观测会改变阅读边界", attrs: { id: "tb-mvu-warning-title" } }),
+          el(document2, "p", { text: "将显示 NPC 秘密、完整蝴蝶效应、未来因果链和系统诊断。此选择只在本次状态栏中有效。" }),
+          el(document2, "button", { text: "确认进入观测者层", attrs: { type: "button", "data-action": "confirm-observer" } }),
+          el(document2, "button", { text: "保持有限视角", attrs: { type: "button", "data-action": "cancel-observer" } })
+        ] })
+      ] }));
+    }
+    const onClick = (event) => {
+      const button = event.target instanceof document2.defaultView.Element ? event.target.closest("button") : null;
+      const action = button?.dataset;
+      if (!action) return;
+      if (action.panel && PANELS.some(([id]) => id === action.panel)) store.set({ panel: action.panel, archivePage: 1 });
+      if (action.action === "observer") {
+        if (store.get().observerEnabled) store.set({ observerEnabled: false, observerWarningOpen: false });
+        else store.set({ observerWarningOpen: true });
+      }
+      if (action.action === "confirm-observer") store.set({ observerEnabled: true, observerWarningOpen: false });
+      if (action.action === "cancel-observer") store.set({ observerWarningOpen: false });
+      if (action.action === "pin") {
+        const { panel, pinned } = store.get();
+        const safePanel = PANELS.some(([id]) => id === panel) ? panel : "overview";
+        store.set({ pinned: pinned.includes(safePanel) ? pinned.filter((id) => id !== safePanel) : [...pinned, safePanel] });
+      }
+      if (action.action === "zoom-in") store.set({ causalScale: Math.min(2, Number((store.get().causalScale + 0.15).toFixed(2))) });
+      if (action.action === "zoom-out") store.set({ causalScale: Math.max(0.55, Number((store.get().causalScale - 0.15).toFixed(2))) });
+      if (action.action === "page-prev") store.set({ archivePage: Math.max(1, store.get().archivePage - 1) });
+      if (action.action === "page-next") store.set({ archivePage: store.get().archivePage + 1 });
+      if (action.action === "collapse") store.set({ collapsed: !store.get().collapsed });
+    };
+    const onInput = (event) => {
+      if (event.target?.dataset?.control === "query") store.set({ query: event.target.value, archivePage: 1 });
+    };
+    const onChange = (event) => {
+      if (event.target?.dataset?.control === "lifecycle") store.set({ lifecycleFilter: event.target.value, archivePage: 1 });
+    };
+    root.addEventListener("click", onClick);
+    root.addEventListener("input", onInput);
+    root.addEventListener("change", onChange);
+    const unsubscribeStore = store.subscribe(render);
+    const mvuCleanup = subscribe(() => {
+      source = read();
+      render();
+    });
+    const unsubscribeMvu = typeof mvuCleanup === "function" ? mvuCleanup : () => {
+    };
+    render();
+    const destroy = () => {
+      if (destroyed) return;
+      destroyed = true;
+      unsubscribeMvu();
+      unsubscribeStore();
+      root.removeEventListener("click", onClick);
+      root.removeEventListener("input", onInput);
+      root.removeEventListener("change", onChange);
+      clear(root);
+      if (root.__tbMvuCleanup === destroy) delete root.__tbMvuCleanup;
+    };
+    root.__tbMvuCleanup = destroy;
+    return { destroy, store };
+  }
+
+  // src/ui/entry.js
+  for (const root of document.querySelectorAll("[data-tb-mvu-app]:not([data-tb-mvu-ready])")) {
+    root.setAttribute("data-tb-mvu-ready", "true");
+    mountThreeBodyStatus(root);
+  }
+})();
+</script>
