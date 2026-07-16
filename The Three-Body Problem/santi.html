@@ -1,0 +1,2473 @@
+<!-- 三体状态栏 v1.1.0 | 三主题配色 | 只读 MVU 映射 | 2026-07-16 -->
+<!doctype html>
+<html lang="zh-CN" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="app-version" content="1.1.0">
+  <title>黑暗森林观测终端</title>
+  <style>
+:root {
+  color-scheme: dark;
+  --void-rgb: 5, 10, 16;
+  --abyss-rgb: 8, 16, 24;
+  --surface-rgb: 14, 28, 38;
+  --surface-hover-rgb: 18, 36, 47;
+  --accent-rgb: 126, 193, 201;
+  --muted-rgb: 116, 143, 149;
+  --danger-rgb: 214, 88, 76;
+  --amber-rgb: 198, 153, 82;
+  --cyan-rgb: 84, 160, 171;
+  --star-rgb: 205, 238, 241;
+  --void: rgb(var(--void-rgb));
+  --abyss: rgb(var(--abyss-rgb));
+  --glass: rgba(var(--surface-rgb), 0.9);
+  --glass-soft: rgba(var(--surface-rgb), 0.72);
+  --line: rgba(var(--accent-rgb), 0.2);
+  --line-strong: rgba(var(--accent-rgb), 0.42);
+  --phosphor: #b2d2d6;
+  --phosphor-hot: #eff9fa;
+  --muted: #8da5aa;
+  --dim: #657d82;
+  --text-soft: #a4bdc1;
+  --text-faint: #849da2;
+  --red: #d6584c;
+  --red-hot: #f08778;
+  --amber: #c69952;
+  --cyan: #62a7b2;
+  --ink: #0a151d;
+  --shadow-outer: rgba(0, 0, 0, 0.5);
+  --shadow-inner: rgba(0, 0, 0, 0.34);
+  --edge-highlight: rgba(226, 248, 250, 0.07);
+  --scan-blend: screen;
+  --font-scale: 1;
+  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, Georgia, serif;
+  --sans: "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  --mono: "IBM Plex Mono", "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+:root[data-theme="day"] {
+  color-scheme: light;
+  --void-rgb: 244, 247, 245;
+  --abyss-rgb: 255, 255, 255;
+  --surface-rgb: 250, 252, 250;
+  --surface-hover-rgb: 255, 255, 255;
+  --accent-rgb: 54, 111, 118;
+  --muted-rgb: 95, 119, 123;
+  --danger-rgb: 176, 65, 56;
+  --amber-rgb: 145, 101, 44;
+  --cyan-rgb: 47, 116, 128;
+  --star-rgb: 58, 104, 110;
+  --line: rgba(var(--accent-rgb), 0.2);
+  --line-strong: rgba(var(--accent-rgb), 0.38);
+  --phosphor: #385459;
+  --phosphor-hot: #182f34;
+  --muted: #536d72;
+  --dim: #75878a;
+  --text-soft: #425c61;
+  --text-faint: #60787c;
+  --red: #b04138;
+  --red-hot: #8f302a;
+  --amber: #91652c;
+  --cyan: #2f7480;
+  --ink: #f4f7f5;
+  --shadow-outer: rgba(37, 56, 59, 0.16);
+  --shadow-inner: rgba(37, 56, 59, 0.08);
+  --edge-highlight: rgba(255, 255, 255, 0.82);
+  --scan-blend: multiply;
+}
+
+:root[data-theme="tea"] {
+  color-scheme: light;
+  --void-rgb: 232, 223, 204;
+  --abyss-rgb: 247, 241, 228;
+  --surface-rgb: 240, 231, 213;
+  --surface-hover-rgb: 251, 246, 235;
+  --accent-rgb: 119, 91, 57;
+  --muted-rgb: 127, 108, 87;
+  --danger-rgb: 151, 67, 57;
+  --amber-rgb: 145, 99, 47;
+  --cyan-rgb: 72, 113, 112;
+  --star-rgb: 112, 86, 55;
+  --line: rgba(var(--accent-rgb), 0.2);
+  --line-strong: rgba(var(--accent-rgb), 0.4);
+  --phosphor: #5c4c3e;
+  --phosphor-hot: #2f2720;
+  --muted: #756452;
+  --dim: #92816f;
+  --text-soft: #665546;
+  --text-faint: #7f6d5d;
+  --red: #974339;
+  --red-hot: #7d332d;
+  --amber: #91632f;
+  --cyan: #487170;
+  --ink: #f3ebdc;
+  --shadow-outer: rgba(73, 54, 34, 0.18);
+  --shadow-inner: rgba(73, 54, 34, 0.1);
+  --edge-highlight: rgba(255, 252, 243, 0.78);
+  --scan-blend: multiply;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: transparent;
+  color: var(--phosphor);
+  font-family: var(--sans);
+  font-size: calc(14px * var(--font-scale));
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+.tb-frame {
+  position: relative;
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(var(--accent-rgb), 0.12), transparent 24%),
+    radial-gradient(circle at 14% 74%, rgba(var(--danger-rgb), 0.09), transparent 28%),
+    linear-gradient(145deg, rgba(var(--void-rgb), 0.98), rgba(var(--surface-rgb), 0.98) 52%, rgba(var(--void-rgb), 0.99));
+  box-shadow:
+    0 18px 60px var(--shadow-outer),
+    inset 0 0 70px var(--shadow-inner),
+    inset 0 1px 0 var(--edge-highlight);
+}
+
+.tb-frame::before,
+.tb-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.tb-frame::before {
+  opacity: 0.48;
+  background-image:
+    radial-gradient(circle at 6% 18%, rgba(var(--star-rgb), 0.75) 0 0.6px, transparent 0.9px),
+    radial-gradient(circle at 18% 64%, rgba(var(--star-rgb), 0.5) 0 0.6px, transparent 1px),
+    radial-gradient(circle at 41% 28%, rgba(var(--star-rgb), 0.45) 0 0.5px, transparent 0.9px),
+    radial-gradient(circle at 69% 76%, rgba(var(--star-rgb), 0.55) 0 0.6px, transparent 1px),
+    radial-gradient(circle at 88% 31%, rgba(var(--star-rgb), 0.7) 0 0.6px, transparent 1px),
+    radial-gradient(circle at 97% 88%, rgba(var(--star-rgb), 0.42) 0 0.5px, transparent 0.9px);
+  background-size: 173px 149px, 211px 191px, 257px 229px, 293px 271px, 337px 311px, 389px 347px;
+}
+
+.tb-frame::after {
+  opacity: 0.16;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(var(--accent-rgb), 0.08) 4px);
+  mix-blend-mode: var(--scan-blend);
+}
+
+.tb-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -30%;
+  z-index: 20;
+  height: 26%;
+  pointer-events: none;
+  opacity: 0.22;
+  background: linear-gradient(180deg, transparent, rgba(var(--accent-rgb), 0.07), transparent);
+  animation: tb-scan 9s linear infinite;
+}
+
+@keyframes tb-scan {
+  to { transform: translateY(500%); }
+}
+
+.tb-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+  gap: 22px;
+  padding: 25px 28px 19px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tb-header::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  width: 34%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red));
+  box-shadow: 0 0 12px rgba(var(--danger-rgb), 0.44);
+}
+
+.tb-kicker,
+.tb-eyebrow {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: calc(9px * var(--font-scale));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.tb-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.tb-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--phosphor);
+  box-shadow: 0 0 10px var(--phosphor);
+  animation: tb-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes tb-pulse {
+  50% { opacity: 0.28; transform: scale(0.78); }
+}
+
+.tb-title {
+  margin: 0;
+  color: var(--phosphor-hot);
+  font-family: var(--serif);
+  font-size: clamp(25px, 4vw, 43px);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  line-height: 1.05;
+  text-shadow: 0 0 28px rgba(var(--accent-rgb), 0.14);
+}
+
+.tb-subtitle {
+  margin-top: 9px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(10px * var(--font-scale));
+  letter-spacing: 0.16em;
+}
+
+.tb-coordinate {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.tb-coordinate-text {
+  min-width: 0;
+  text-align: right;
+}
+
+.tb-time {
+  color: var(--phosphor-hot);
+  font-family: var(--mono);
+  font-size: calc(15px * var(--font-scale));
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+}
+
+.tb-location {
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: calc(11px * var(--font-scale));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tb-orbit {
+  --p: 0;
+  position: relative;
+  display: grid;
+  width: 74px;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--red) calc(var(--p) * 1%), rgba(var(--muted-rgb), 0.13) 0);
+  box-shadow: 0 0 24px rgba(var(--danger-rgb), 0.12);
+}
+
+.tb-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--abyss);
+}
+
+.tb-orbit-value,
+.tb-orbit-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tb-orbit-value {
+  margin-top: 7px;
+  color: var(--red-hot);
+  font-size: calc(17px * var(--font-scale));
+}
+
+.tb-orbit-label {
+  margin-top: -17px;
+  color: var(--dim);
+  font-size: calc(7px * var(--font-scale));
+  letter-spacing: 0.12em;
+}
+
+.tb-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 17px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+
+.tb-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tb-tab {
+  position: relative;
+  flex: 1 0 auto;
+  min-width: 100px;
+  padding: 14px 12px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: calc(13px * var(--font-scale));
+  letter-spacing: 0.08em;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.tb-tab::before {
+  content: attr(data-code);
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--mono);
+  font-size: calc(7px * var(--font-scale));
+  letter-spacing: 0.18em;
+}
+
+.tb-tab::after {
+  content: "";
+  position: absolute;
+  right: 20%;
+  bottom: -1px;
+  left: 20%;
+  height: 1px;
+  background: var(--phosphor);
+  box-shadow: 0 0 10px var(--phosphor);
+  opacity: 0;
+  transform: scaleX(0.2);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.tb-tab:hover,
+.tb-tab.active {
+  color: var(--phosphor-hot);
+  background: linear-gradient(180deg, transparent, rgba(var(--accent-rgb), 0.06));
+}
+
+.tb-tab.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.tb-main {
+  padding: 21px 22px 19px;
+}
+
+.tb-panel {
+  display: none;
+  animation: tb-in 260ms ease both;
+}
+
+.tb-panel.active {
+  display: block;
+}
+
+@keyframes tb-in {
+  from { opacity: 0; transform: translateY(4px); }
+}
+
+.tb-hero-grid,
+.tb-grid-2,
+.tb-grid-3,
+.tb-entity-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.tb-hero-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(270px, 0.92fr);
+}
+
+.tb-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tb-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tb-entity-grid {
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+}
+
+.tb-card,
+.tb-entity {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(var(--surface-rgb), 0.72), rgba(var(--void-rgb), 0.68));
+  box-shadow: inset 0 1px 0 rgba(var(--star-rgb), 0.04);
+}
+
+.tb-card::before,
+.tb-entity::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 31px;
+  height: 9px;
+  border-top: 1px solid var(--phosphor);
+  border-left: 1px solid var(--phosphor);
+  opacity: 0.55;
+}
+
+.tb-card {
+  padding: 16px;
+}
+
+.tb-card[data-action="open-root"],
+.tb-entity[data-action="open-entity"] {
+  cursor: pointer;
+}
+
+.tb-card[data-action="open-root"]:hover,
+.tb-entity:hover {
+  border-color: var(--line-strong);
+  background: linear-gradient(145deg, rgba(var(--surface-hover-rgb), 0.84), rgba(var(--abyss-rgb), 0.76));
+}
+
+.tb-card-title,
+.tb-section-title,
+.tb-entity-name {
+  color: var(--phosphor-hot);
+  font-family: var(--serif);
+  font-weight: 500;
+}
+
+.tb-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: calc(15px * var(--font-scale));
+  letter-spacing: 0.06em;
+}
+
+.tb-card-code,
+.tb-count {
+  flex: 0 0 auto;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+  letter-spacing: 0.12em;
+}
+
+.tb-section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 21px 1px 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tb-section-title {
+  font-size: calc(16px * var(--font-scale));
+  letter-spacing: 0.08em;
+}
+
+.tb-section-meta {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+  letter-spacing: 0.1em;
+}
+
+.tb-fact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 7px;
+}
+
+.tb-fact {
+  padding: 8px 9px;
+  border-left: 1px solid rgba(var(--accent-rgb), 0.22);
+  background: rgba(var(--accent-rgb), 0.045);
+}
+
+.tb-fact-label {
+  margin-bottom: 4px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+  letter-spacing: 0.08em;
+}
+
+.tb-fact-value {
+  overflow-wrap: anywhere;
+  color: var(--phosphor);
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1.5;
+}
+
+.tb-summary {
+  color: var(--text-soft);
+  font-family: var(--serif);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.8;
+}
+
+.tb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tb-chip,
+.tb-status {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  background: rgba(var(--accent-rgb), 0.07);
+  color: var(--text-soft);
+  font-family: var(--mono);
+  font-size: calc(9px * var(--font-scale));
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+}
+
+.tb-chip {
+  padding: 4px 7px;
+}
+
+.tb-chip.danger,
+.tb-status.danger {
+  border-color: rgba(var(--danger-rgb), 0.36);
+  background: rgba(var(--danger-rgb), 0.09);
+  color: var(--red-hot);
+}
+
+.tb-chip.amber,
+.tb-status.amber {
+  border-color: rgba(var(--amber-rgb), 0.32);
+  background: rgba(var(--amber-rgb), 0.08);
+  color: var(--amber);
+}
+
+.tb-chip.cyan,
+.tb-status.cyan {
+  border-color: rgba(var(--cyan-rgb), 0.32);
+  background: rgba(var(--cyan-rgb), 0.08);
+  color: var(--cyan);
+}
+
+.tb-status {
+  flex: 0 0 auto;
+  padding: 3px 6px;
+  white-space: nowrap;
+}
+
+.tb-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.tb-bar-row {
+  display: grid;
+  gap: 5px;
+}
+
+.tb-bar-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: calc(9px * var(--font-scale));
+  font-variant-numeric: tabular-nums;
+}
+
+.tb-bar {
+  height: 3px;
+  overflow: hidden;
+  background: rgba(var(--muted-rgb), 0.14);
+}
+
+.tb-bar-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.52), var(--phosphor));
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.42);
+  transition: width 500ms ease;
+}
+
+.tb-bar-fill.warn {
+  background: linear-gradient(90deg, rgba(var(--amber-rgb), 0.6), var(--amber));
+  box-shadow: 0 0 8px rgba(var(--amber-rgb), 0.32);
+}
+
+.tb-bar-fill.danger {
+  background: linear-gradient(90deg, rgba(var(--danger-rgb), 0.7), var(--red-hot));
+  box-shadow: 0 0 8px rgba(var(--danger-rgb), 0.36);
+}
+
+.tb-radar-wrap {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.85fr) minmax(150px, 1.15fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.tb-radar {
+  display: block;
+  width: 100%;
+  max-width: 230px;
+  margin: 0 auto;
+}
+
+.tb-radar .grid {
+  fill: none;
+  stroke: rgba(var(--accent-rgb), 0.17);
+  stroke-width: 1;
+}
+
+.tb-radar .axis {
+  stroke: rgba(var(--accent-rgb), 0.13);
+  stroke-width: 1;
+}
+
+.tb-radar .shape {
+  fill: rgba(var(--danger-rgb), 0.13);
+  stroke: var(--red-hot);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 5px rgba(var(--danger-rgb), 0.35));
+}
+
+.tb-radar text {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+}
+
+.tb-alert-list,
+.tb-plain-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tb-alert-list li,
+.tb-plain-list li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--text-faint);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1.55;
+}
+
+.tb-alert-list li::before,
+.tb-plain-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 5px;
+  height: 1px;
+  background: var(--red);
+  box-shadow: 0 0 6px rgba(var(--danger-rgb), 0.52);
+}
+
+.tb-plain-list li::before {
+  background: var(--phosphor);
+  box-shadow: none;
+}
+
+.tb-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 13px;
+}
+
+.tb-search {
+  min-width: 0;
+  flex: 1 1 auto;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  outline: none;
+  background: rgba(var(--abyss-rgb), 0.7);
+  color: var(--phosphor);
+  font-family: var(--mono);
+  font-size: calc(10px * var(--font-scale));
+}
+
+.tb-search:focus {
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.08);
+}
+
+.tb-filter {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: calc(9px * var(--font-scale));
+}
+
+.tb-filter.active,
+.tb-filter:hover {
+  border-color: var(--line-strong);
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--phosphor-hot);
+}
+
+.tb-entity {
+  min-width: 0;
+  padding: 13px;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.tb-entity:hover {
+  transform: translateY(-1px);
+}
+
+.tb-entity-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tb-entity-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: calc(14px * var(--font-scale));
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tb-entity-id {
+  margin-top: 3px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+}
+
+.tb-entity-body {
+  margin-top: 10px;
+  color: var(--text-faint);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1.62;
+}
+
+.tb-entity-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 11px;
+}
+
+.tb-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tb-presence::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+
+.tb-chain {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(176px, 1fr);
+  gap: 26px;
+  padding: 3px 2px 11px;
+  overflow-x: auto;
+  scrollbar-color: rgba(var(--accent-rgb), 0.28) transparent;
+}
+
+.tb-chain-node {
+  position: relative;
+  padding: 13px;
+  border: 1px solid var(--line);
+  background: rgba(var(--abyss-rgb), 0.78);
+  cursor: pointer;
+}
+
+.tb-chain-node:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1px);
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--red), rgba(var(--danger-rgb), 0.12));
+}
+
+.tb-chain-node:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: calc(50% - 2px);
+  left: calc(100% + 21px);
+  width: 4px;
+  height: 4px;
+  border-top: 1px solid var(--red);
+  border-right: 1px solid var(--red);
+  transform: rotate(45deg);
+}
+
+.tb-chain-type {
+  color: var(--red-hot);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+  letter-spacing: 0.08em;
+}
+
+.tb-chain-title {
+  margin-top: 6px;
+  color: var(--phosphor-hot);
+  font-family: var(--serif);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.45;
+}
+
+.tb-chain-meta {
+  margin-top: 8px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+}
+
+.tb-empty,
+.tb-loading {
+  display: grid;
+  padding: 34px 18px;
+  place-items: center;
+  border: 1px dashed var(--line);
+  color: var(--dim);
+  text-align: center;
+  font-family: var(--mono);
+  font-size: calc(10px * var(--font-scale));
+  letter-spacing: 0.08em;
+}
+
+.tb-loading-mark {
+  width: 34px;
+  aspect-ratio: 1;
+  margin-bottom: 11px;
+  border: 1px solid var(--line);
+  border-top-color: var(--phosphor);
+  border-radius: 50%;
+  animation: tb-spin 1.5s linear infinite;
+}
+
+@keyframes tb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tb-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 22px;
+  border-top: 1px solid var(--line);
+  background: rgba(var(--abyss-rgb), 0.62);
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+  letter-spacing: 0.08em;
+}
+
+.tb-footer-left {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tb-footer-tools,
+.tb-theme-switch {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.tb-footer-tools {
+  gap: 8px;
+}
+
+.tb-theme-switch {
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  background: rgba(var(--abyss-rgb), 0.42);
+}
+
+.tb-theme-option {
+  display: grid;
+  width: 25px;
+  height: 21px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: calc(10px * var(--font-scale));
+  line-height: 1;
+}
+
+.tb-theme-option:hover {
+  color: var(--phosphor-hot);
+}
+
+.tb-theme-option.active {
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--phosphor-hot);
+  box-shadow: inset 0 -1px 0 var(--phosphor);
+}
+
+.tb-refresh {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: calc(8px * var(--font-scale));
+}
+
+.tb-refresh:hover {
+  border-color: var(--line-strong);
+  color: var(--phosphor-hot);
+}
+
+.tb-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+  display: none;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(var(--accent-rgb), 0.12), transparent 28%),
+    rgba(var(--void-rgb), 0.985);
+}
+
+.tb-modal.active {
+  display: flex;
+}
+
+.tb-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tb-modal-title {
+  margin: 3px 0 0;
+  color: var(--phosphor-hot);
+  font-family: var(--serif);
+  font-size: calc(22px * var(--font-scale));
+  font-weight: 500;
+  letter-spacing: 0.07em;
+}
+
+.tb-modal-close {
+  flex: 0 0 auto;
+  width: 34px;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+}
+
+.tb-modal-close:hover {
+  border-color: rgba(var(--danger-rgb), 0.42);
+  color: var(--red-hot);
+}
+
+.tb-modal-body {
+  flex: 1 1 auto;
+  max-height: 720px;
+  padding: 18px 22px 28px;
+  overflow-y: auto;
+  scrollbar-color: rgba(var(--accent-rgb), 0.28) transparent;
+}
+
+.tb-detail-group {
+  margin-bottom: 11px;
+  border: 1px solid var(--line);
+  background: rgba(var(--surface-rgb), 0.5);
+}
+
+.tb-detail-group > summary {
+  padding: 11px 13px;
+  color: var(--phosphor-hot);
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: calc(13px * var(--font-scale));
+  letter-spacing: 0.05em;
+}
+
+.tb-detail-content {
+  padding: 0 13px 13px;
+}
+
+.tb-detail-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.3fr) minmax(0, 0.7fr);
+  gap: 13px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.1);
+}
+
+.tb-detail-row:last-child {
+  border-bottom: 0;
+}
+
+.tb-detail-key {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: calc(9px * var(--font-scale));
+}
+
+.tb-detail-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-soft);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1.65;
+}
+
+.tb-relation-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 11px;
+  border: 1px solid var(--line);
+  background: rgba(var(--surface-rgb), 0.48);
+}
+
+.tb-relation-side {
+  min-width: 0;
+}
+
+.tb-relation-side:last-child {
+  text-align: right;
+}
+
+.tb-relation-arrow {
+  color: var(--red);
+  font-family: var(--mono);
+}
+
+.tb-error {
+  border-color: rgba(var(--danger-rgb), 0.36);
+  color: var(--red-hot);
+}
+
+@media (max-width: 760px) {
+  .tb-header {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 21px 18px 16px;
+  }
+
+  .tb-coordinate {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .tb-coordinate-text {
+    text-align: left;
+  }
+
+  .tb-orbit {
+    width: 62px;
+  }
+
+  .tb-main {
+    padding: 16px 14px;
+  }
+
+  .tb-hero-grid,
+  .tb-grid-2,
+  .tb-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .tb-tab {
+    min-width: 90px;
+  }
+
+  .tb-radar-wrap {
+    grid-template-columns: minmax(150px, 0.8fr) minmax(130px, 1.2fr);
+  }
+
+  .tb-footer {
+    padding: 9px 14px;
+  }
+
+  .tb-footer-tools {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 520px) {
+  html,
+  body {
+    font-size: calc(13px * var(--font-scale));
+  }
+
+  .tb-title {
+    font-size: 27px;
+  }
+
+  .tb-subtitle {
+    letter-spacing: 0.08em;
+  }
+
+  .tb-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .tb-search {
+    flex-basis: 100%;
+  }
+
+  .tb-radar-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .tb-radar {
+    max-width: 200px;
+  }
+
+  .tb-entity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tb-modal-head,
+  .tb-modal-body {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .tb-detail-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .tb-relation-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .tb-relation-side:last-child {
+    text-align: left;
+  }
+
+  .tb-relation-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="tb-frame" id="tb-frame">
+    <div class="tb-scan"></div>
+    <header class="tb-header">
+      <div>
+        <div class="tb-kicker"><span class="tb-live-dot"></span><span id="tb-source">MVU SIGNAL · ACQUIRING</span></div>
+        <h1 class="tb-title">黑暗森林观测终端</h1>
+        <div class="tb-subtitle">RED COAST DEEP-SPACE ARRAY / TRISOLARIS OBSERVATORY</div>
+      </div>
+      <div class="tb-coordinate">
+        <div class="tb-coordinate-text">
+          <div class="tb-time" id="tb-time">时间未知</div>
+          <div class="tb-location" id="tb-location">坐标尚未锁定</div>
+        </div>
+        <div class="tb-orbit" id="tb-orbit" style="--p:0">
+          <span class="tb-orbit-value" id="tb-deviation">—</span>
+          <span class="tb-orbit-label">偏移度</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="tb-tabs" aria-label="状态栏栏目">
+      <button class="tb-tab active" type="button" data-tab="observation" data-code="01 / SIGNAL">观测台</button>
+      <button class="tb-tab" type="button" data-tab="protagonist" data-code="02 / SUBJECT">主角</button>
+      <button class="tb-tab" type="button" data-tab="people" data-code="03 / PERSONAE">人物</button>
+      <button class="tb-tab" type="button" data-tab="civilization" data-code="04 / DOMAIN">文明态势</button>
+      <button class="tb-tab" type="button" data-tab="causality" data-code="05 / CASCADE">因果链</button>
+      <button class="tb-tab" type="button" data-tab="records" data-code="06 / ARCHIVE">记录</button>
+    </nav>
+
+    <main class="tb-main">
+      <section class="tb-panel active" id="tb-panel-observation"><div class="tb-loading"><div class="tb-loading-mark"></div>正在搜索变量信号</div></section>
+      <section class="tb-panel" id="tb-panel-protagonist"></section>
+      <section class="tb-panel" id="tb-panel-people"></section>
+      <section class="tb-panel" id="tb-panel-civilization"></section>
+      <section class="tb-panel" id="tb-panel-causality"></section>
+      <section class="tb-panel" id="tb-panel-records"></section>
+    </main>
+
+    <footer class="tb-footer">
+      <div class="tb-footer-left" id="tb-footer-status">等待 MVU 初始化</div>
+      <div class="tb-footer-tools">
+        <div class="tb-theme-switch" role="group" aria-label="终端配色">
+          <button class="tb-theme-option active" type="button" data-action="set-theme" data-theme-choice="night" aria-label="夜间模式" aria-pressed="true" title="夜间模式">夜</button>
+          <button class="tb-theme-option" type="button" data-action="set-theme" data-theme-choice="day" aria-label="白昼模式" aria-pressed="false" title="白昼模式">昼</button>
+          <button class="tb-theme-option" type="button" data-action="set-theme" data-theme-choice="tea" aria-label="茶色模式" aria-pressed="false" title="茶色模式">茶</button>
+        </div>
+        <button class="tb-refresh" type="button" data-action="refresh">重新采样</button>
+      </div>
+    </footer>
+
+    <div class="tb-modal" id="tb-modal" aria-hidden="true">
+      <div class="tb-modal-head">
+        <div>
+          <div class="tb-eyebrow" id="tb-modal-code">ARCHIVE DETAIL</div>
+          <h2 class="tb-modal-title" id="tb-modal-title">档案详情</h2>
+        </div>
+        <button class="tb-modal-close" type="button" data-action="close-modal" aria-label="关闭">×</button>
+      </div>
+      <div class="tb-modal-body" id="tb-modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+window.ThreeBodyStatusbar = (() => {
+  const state = {
+    data: {},
+    tab: "observation",
+    npcFilter: "全部",
+    npcSearch: "",
+    domainFilter: "全部",
+    refreshing: false,
+    uidMap: new Map(),
+    entityIndex: new Map(),
+    preview: false,
+    cleanup: [],
+    timers: [],
+  };
+
+  const DICTIONARIES = [
+    "人物", "关系", "组织", "文明", "科技", "项目", "重要资产", "情报", "通讯", "原著事件", "任务", "承诺", "记忆摘要",
+  ];
+
+  const $id = id => document.getElementById(id);
+
+  const esc = value => String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+  const asObject = value => value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  const asArray = value => Array.isArray(value) ? value : value == null || value === "" ? [] : [value];
+  const entries = value => Object.entries(asObject(value));
+  const valueAt = (source, path, fallback = "") => {
+    const result = String(path).split(".").reduce((current, key) => current == null ? undefined : current[key], source);
+    return result === undefined || result === null || result === "" ? fallback : result;
+  };
+
+  const isBlank = value => {
+    if (value === undefined || value === null || value === "") return true;
+    if (Array.isArray(value)) return value.length === 0;
+    if (typeof value === "object") return Object.keys(value).length === 0;
+    return false;
+  };
+
+  const numeric = value => {
+    if (value === null || value === undefined || value === "") return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.max(0, Math.min(100, number)) : null;
+  };
+
+  const compact = (value, limit = 82) => {
+    const text = safeDisplay(value);
+    return text.length > limit ? `${text.slice(0, limit - 1)}…` : text;
+  };
+
+  const safeDisplay = (value, depth = 0) => {
+    if (value === null || value === undefined || value === "") return "未记录";
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
+    if (depth >= 3) return "复杂记录";
+    if (Array.isArray(value)) return value.length ? value.map(item => safeDisplay(item, depth + 1)).join("、") : "无";
+    const object = asObject(value);
+    const named = object.名称 || object.姓名 || object.标题 || object.摘要 || object.描述;
+    if (named) return safeDisplay(named, depth + 1);
+    const pairs = Object.entries(object).slice(0, 5).map(([key, item]) => `${key}: ${safeDisplay(item, depth + 1)}`);
+    return pairs.length ? pairs.join("；") : "无";
+  };
+
+  const tone = value => {
+    const text = String(value ?? "");
+    if (/死亡|濒死|敌对|失败|失效|销毁|取消|绝密|不可逆|重大|全新|高风险|被截获|已违背/.test(text)) return "danger";
+    if (/受阻|等待|延迟|潜伏|未知|受限|失踪|暂停|准备|待验证|可能/.test(text)) return "amber";
+    if (/远程|传输|科技|实验|原型|进行中|已接收|高概率/.test(text)) return "cyan";
+    return "";
+  };
+
+  const status = value => `<span class="tb-status ${tone(value)}" title="${esc(safeDisplay(value))}">${esc(compact(value, 12))}</span>`;
+  const chip = (value, kind = "") => `<span class="tb-chip ${kind || tone(value)}" title="${esc(safeDisplay(value))}">${esc(compact(value, 16))}</span>`;
+  const chips = (values, emptyText = "无记录") => {
+    const list = asArray(values).filter(item => !isBlank(item));
+    return list.length ? `<div class="tb-chips">${list.map(item => chip(item)).join("")}</div>` : `<span class="tb-count">${esc(emptyText)}</span>`;
+  };
+
+  const list = (values, alert = false, emptyText = "暂无记录") => {
+    const rows = asArray(values).filter(item => !isBlank(item));
+    if (!rows.length) return empty(emptyText);
+    return `<ul class="${alert ? "tb-alert-list" : "tb-plain-list"}">${rows.map(item => `<li>${esc(resolveUIDs(safeDisplay(item)))}</li>`).join("")}</ul>`;
+  };
+
+  const empty = message => `<div class="tb-empty">${esc(message)}</div>`;
+  const sectionHead = (title, meta = "") => `<div class="tb-section-head"><div class="tb-section-title">${esc(title)}</div><div class="tb-section-meta">${esc(meta)}</div></div>`;
+  const cardTitle = (title, code = "") => `<div class="tb-card-title"><span>${esc(title)}</span><span class="tb-card-code">${esc(code)}</span></div>`;
+  const fact = (label, value) => `<div class="tb-fact"><div class="tb-fact-label">${esc(label)}</div><div class="tb-fact-value">${esc(resolveUIDs(safeDisplay(value)))}</div></div>`;
+  const factGrid = rows => `<div class="tb-fact-grid">${rows.filter(([, value]) => !isBlank(value)).map(([label, value]) => fact(label, value)).join("") || fact("记录", "未建立")}</div>`;
+
+  const bar = (label, value, invert = false) => {
+    const number = numeric(value);
+    const shown = number === null ? "—" : `${Math.round(number)}%`;
+    const danger = number !== null && (invert ? number < 35 : number >= 70);
+    const warn = number !== null && !danger && (invert ? number < 60 : number >= 40);
+    return `<div class="tb-bar-row"><div class="tb-bar-head"><span>${esc(label)}</span><span>${shown}</span></div><div class="tb-bar"><div class="tb-bar-fill ${danger ? "danger" : warn ? "warn" : ""}" style="width:${number ?? 0}%"></div></div></div>`;
+  };
+
+  const locationText = location => {
+    const object = asObject(location);
+    const order = ["星系", "天体", "国家或政体", "区域", "设施或载体", "具体地点"];
+    const values = order.map(key => object[key]).filter(value => !isBlank(value));
+    return values.length ? values.join(" · ") : "坐标尚未锁定";
+  };
+
+  const relationRefs = relation => [valueAt(relation, "A.UID", ""), valueAt(relation, "B.UID", "")].filter(Boolean);
+
+  const rebuildIndexes = data => {
+    state.uidMap.clear();
+    state.entityIndex.clear();
+    const protagonistName = valueAt(data, "主角.身份.姓名", "主角");
+    state.uidMap.set("主角", protagonistName);
+    state.entityIndex.set("ROOT:主角", { kind: "主角", uid: "主角", value: asObject(data.主角) });
+    state.entityIndex.set("ROOT:世界线", { kind: "世界线", uid: "世界线", value: asObject(data.世界线) });
+    state.entityIndex.set("ROOT:时空", { kind: "时空", uid: "时空", value: asObject(data.时空) });
+    state.entityIndex.set("ROOT:场景", { kind: "场景", uid: "场景", value: asObject(data.场景) });
+
+    DICTIONARIES.forEach(kind => {
+      entries(data[kind]).forEach(([uid, value]) => {
+        const object = asObject(value);
+        const name = object.名称 || object.姓名 || object.标题 || object.内容 || uid;
+        state.uidMap.set(uid, String(name));
+        state.entityIndex.set(`${kind}:${uid}`, { kind, uid, value: object });
+      });
+    });
+
+    entries(valueAt(data, "因果.节点", {})).forEach(([uid, value]) => {
+      const object = asObject(value);
+      state.uidMap.set(uid, object.标题 || uid);
+      state.entityIndex.set(`因果节点:${uid}`, { kind: "因果节点", uid, value: object });
+    });
+    entries(valueAt(data, "因果.边", {})).forEach(([uid, value]) => state.entityIndex.set(`因果边:${uid}`, { kind: "因果边", uid, value: asObject(value) }));
+    entries(valueAt(data, "因果.延迟效应", {})).forEach(([uid, value]) => {
+      const object = asObject(value);
+      state.uidMap.set(uid, object.名称 || uid);
+      state.entityIndex.set(`延迟效应:${uid}`, { kind: "延迟效应", uid, value: object });
+    });
+    entries(valueAt(data, "因果.未来影响", {})).forEach(([uid, value]) => {
+      const object = asObject(value);
+      state.uidMap.set(uid, object.名称 || uid);
+      state.entityIndex.set(`未来影响:${uid}`, { kind: "未来影响", uid, value: object });
+    });
+  };
+
+  const resolveUID = uid => state.uidMap.get(String(uid)) || String(uid || "未知对象");
+  const resolveUIDs = text => {
+    let result = String(text ?? "");
+    const matches = result.match(/(?:person|relation|org|civ|tech|project|asset|intel|comm|event|cause|edge|delay|projection|task|promise|memory)_\d+/g) || [];
+    [...new Set(matches)].forEach(uid => {
+      const name = state.uidMap.get(uid);
+      if (name) result = result.replaceAll(uid, `${name}（${uid}）`);
+    });
+    return result;
+  };
+
+  const refText = value => {
+    if (typeof value === "string") return resolveUID(value);
+    const object = asObject(value);
+    return object.名称 || resolveUID(object.UID) || "未知对象";
+  };
+
+  const normalizeData = raw => {
+    const possibilities = [
+      raw?.stat_data,
+      raw?.data?.stat_data,
+      raw?.variables?.stat_data,
+      raw?.message?.data?.stat_data,
+      raw?.data,
+      raw,
+    ];
+    return possibilities.find(candidate => candidate && typeof candidate === "object" && (candidate.时空 || candidate.主角 || candidate.因果)) || null;
+  };
+
+  const withTimeout = (promise, milliseconds) => Promise.race([
+    Promise.resolve(promise),
+    new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), milliseconds)),
+  ]);
+
+  const readGameData = async () => {
+    if (new URLSearchParams(location.search).get("preview") === "1") {
+      state.preview = true;
+      return typeof state.makePreviewData === "function" ? state.makePreviewData() : {};
+    }
+
+    state.preview = false;
+    if (typeof globalThis.waitGlobalInitialized === "function") {
+      try { await withTimeout(globalThis.waitGlobalInitialized("Mvu"), 2600); } catch {}
+    }
+
+    const ids = [];
+    if (typeof globalThis.getCurrentMessageId === "function") {
+      try {
+        const current = globalThis.getCurrentMessageId();
+        if (current !== undefined && current !== null) ids.push(current);
+      } catch {}
+    }
+
+    if (typeof globalThis.getChatMessages === "function") {
+      try {
+        const messages = await globalThis.getChatMessages("0-{{lastMessageId}}");
+        const assistant = asArray(messages).slice().reverse().find(message => message?.role === "assistant");
+        if (assistant?.message_id !== undefined) ids.push(assistant.message_id);
+      } catch {}
+    }
+
+    const uniqueIds = [...new Set(ids)];
+    if (globalThis.Mvu?.getMvuData) {
+      for (const messageId of uniqueIds) {
+        try {
+          const data = normalizeData(await globalThis.Mvu.getMvuData({ type: "message", message_id: messageId }));
+          if (data) return data;
+        } catch {}
+      }
+      try {
+        const data = normalizeData(await globalThis.Mvu.getMvuData("latest"));
+        if (data) return data;
+      } catch {}
+    }
+
+    if (typeof globalThis.getVariables === "function") {
+      const options = [
+        { type: "message", message_id: "latest" },
+        { type: "chat" },
+      ];
+      for (const option of options) {
+        try {
+          const data = normalizeData(await globalThis.getVariables(option));
+          if (data) return data;
+        } catch {}
+      }
+    }
+
+    return null;
+  };
+
+  const entityButton = (kind, uid, inner, extraClass = "") => `<article class="tb-entity ${extraClass}" data-action="open-entity" data-kind="${esc(kind)}" data-uid="${esc(uid)}">${inner}</article>`;
+  const rootCard = (root, inner, extraClass = "") => `<article class="tb-card ${extraClass}" data-action="open-root" data-root="${esc(root)}">${inner}</article>`;
+
+  const entityName = (kind, uid, object) => object.名称 || object.姓名 || object.标题 || object.内容 || `${kind} ${uid}`;
+
+  const updateHeader = data => {
+    const time = asObject(data.时空);
+    const date = time.公元时间 || time.纪元时间 || "时间未知";
+    const era = [time.主纪元, time.纪元时间].filter(value => !isBlank(value) && value !== date).join(" · ");
+    $id("tb-time").textContent = era ? `${date} / ${era}` : date;
+    $id("tb-location").textContent = locationText(time.当前地点);
+    $id("tb-location").title = locationText(time.当前地点);
+    const deviation = numeric(valueAt(data, "世界线.总体偏移度", null));
+    $id("tb-deviation").textContent = deviation === null ? "—" : String(Math.round(deviation));
+    $id("tb-orbit").style.setProperty("--p", String(deviation ?? 0));
+    $id("tb-source").textContent = state.preview ? "PREVIEW SIGNAL · SYNTHETIC" : "MVU SIGNAL · SYNCHRONIZED";
+  };
+
+  const updateFooter = data => {
+    const counts = [
+      ["人物", entries(data.人物).length],
+      ["因果节点", entries(valueAt(data, "因果.节点", {})).length],
+      ["原著事件", entries(data.原著事件).length],
+      ["任务", entries(data.任务).length],
+    ];
+    const prefix = state.preview ? "预览数据" : "只读链路已同步";
+    $id("tb-footer-status").textContent = `${prefix} · ${counts.map(([name, count]) => `${name} ${count}`).join(" · ")}`;
+  };
+
+  return {
+    state,
+    DICTIONARIES,
+    $id,
+    esc,
+    asObject,
+    asArray,
+    entries,
+    valueAt,
+    isBlank,
+    numeric,
+    compact,
+    safeDisplay,
+    tone,
+    status,
+    chip,
+    chips,
+    list,
+    empty,
+    sectionHead,
+    cardTitle,
+    fact,
+    factGrid,
+    bar,
+    locationText,
+    relationRefs,
+    rebuildIndexes,
+    resolveUID,
+    resolveUIDs,
+    refText,
+    readGameData,
+    entityButton,
+    rootCard,
+    entityName,
+    updateHeader,
+    updateFooter,
+  };
+})();
+
+((TB) => {
+  const {
+    state, $id, esc, asObject, asArray, entries, valueAt, isBlank, numeric, compact, safeDisplay,
+    status, chip, chips, list, empty, sectionHead, cardTitle, factGrid, bar, locationText,
+    resolveUID, resolveUIDs, entityButton, rootCard,
+  } = TB;
+
+  const radar = dimensions => {
+    const labels = ["人物轨迹", "关系网络", "组织政策", "科技工程", "文明命运"];
+    const center = 112;
+    const radius = 72;
+    const point = (index, amount) => {
+      const angle = -Math.PI / 2 + index * Math.PI * 2 / labels.length;
+      const scaled = radius * amount;
+      return [center + Math.cos(angle) * scaled, center + Math.sin(angle) * scaled];
+    };
+    const polygon = amount => labels.map((_, index) => point(index, amount).join(",")).join(" ");
+    const shape = labels.map((label, index) => point(index, (numeric(dimensions[label]) ?? 0) / 100).join(",")).join(" ");
+    const axes = labels.map((_, index) => {
+      const [x, y] = point(index, 1);
+      return `<line class="axis" x1="${center}" y1="${center}" x2="${x}" y2="${y}"></line>`;
+    }).join("");
+    const texts = labels.map((label, index) => {
+      const [x, y] = point(index, 1.25);
+      const anchor = x < center - 12 ? "end" : x > center + 12 ? "start" : "middle";
+      return `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle">${esc(label.slice(0, 2))}</text>`;
+    }).join("");
+    return `<svg class="tb-radar" viewBox="0 0 224 224" role="img" aria-label="世界线偏移雷达图"><polygon class="grid" points="${polygon(1)}"></polygon><polygon class="grid" points="${polygon(0.75)}"></polygon><polygon class="grid" points="${polygon(0.5)}"></polygon><polygon class="grid" points="${polygon(0.25)}"></polygon>${axes}<polygon class="shape" points="${shape}"></polygon>${texts}</svg>`;
+  };
+
+  const renderObservation = data => {
+    const time = asObject(data.时空);
+    const scene = asObject(data.场景);
+    const worldline = asObject(data.世界线);
+    const dimensions = asObject(worldline.偏移维度);
+    const events = entries(data.原著事件);
+    const activeEvents = events.filter(([, event]) => !["已完成", "结果等价完成"].includes(event.当前状态)).slice(0, 4);
+    const delayed = entries(valueAt(data, "因果.延迟效应", {})).filter(([, item]) => !["失效", "归档"].includes(item.状态));
+    const future = entries(valueAt(data, "因果.未来影响", {}));
+    const currentEvent = scene.当前事件名称 || resolveUID(scene.当前事件UID) || "未锁定事件";
+
+    const worldlineCard = rootCard("世界线", `${cardTitle("世界线干涉图谱", "WORLDLINE")}
+      <div class="tb-radar-wrap">
+        ${radar(dimensions)}
+        <div>
+          <div class="tb-summary">当前世界线：${esc(worldline.当前世界线 || "原著基线")}</div>
+          <div class="tb-chips" style="margin-top:9px">${status(worldline.分类 || "暂无法判断")}${chip(`共同锚点 · ${worldline.最近共同锚点 || "未知"}`)}</div>
+          <div class="tb-bars" style="margin-top:13px">${Object.entries(dimensions).map(([key, value]) => bar(key, value)).join("") || bar("总体偏移", worldline.总体偏移度)}</div>
+        </div>
+      </div>`);
+
+    const sceneCard = rootCard("场景", `${cardTitle(scene.标题 || "当前观测场", "SCENE")}
+      <div class="tb-summary">${esc(currentEvent)}</div>
+      <div style="margin-top:12px">${factGrid([
+        ["叙事阶段", scene.叙事阶段],
+        ["社会环境", scene.社会环境],
+        ["直接在场", asArray(scene.直接在场者UID).length],
+        ["远程参与", asArray(scene.远程参与者UID).length],
+        ["缺席影响", asArray(scene.缺席影响者UID).length],
+        ["通信延迟", time.通信延迟],
+      ])}</div>
+      <div style="margin-top:12px">${chips([time.空间维度, time.低光速区状态, time.小宇宙状态].filter(Boolean))}</div>`);
+
+    const signalCard = `<article class="tb-card">${cardTitle("局部风险与信息边界", "SIGNAL NOISE")}
+      <div class="tb-grid-2">
+        <div><div class="tb-eyebrow" style="margin-bottom:8px">RISK</div>${list(scene.当前风险, true, "当前未识别到显著风险")}</div>
+        <div><div class="tb-eyebrow" style="margin-bottom:8px">BLIND ZONE</div>${list(scene.信息边界, false, "信息边界尚未建立")}</div>
+      </div>
+      ${!isBlank(scene.行动限制) ? `<div style="margin-top:13px">${chips(scene.行动限制)}</div>` : ""}
+    </article>`;
+
+    const evidenceCard = `<article class="tb-card">${cardTitle("可见证据", "EVIDENCE")}
+      ${entries(scene.可见证据).length ? factGrid(entries(scene.可见证据)) : empty("当前场景没有已登记的可见证据")}
+    </article>`;
+
+    const eventCards = activeEvents.length ? activeEvents.map(([uid, event]) => entityButton("原著事件", uid, `
+      <div class="tb-entity-head"><div><div class="tb-entity-name">${esc(event.名称 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(event.原著时间 || "时间未知")}</div></div>${status(event.当前状态)}</div>
+      <div class="tb-entity-body">${esc(compact(event.当前预计结果 || event.原著结果 || "结果尚未投影", 78))}</div>
+      <div class="tb-entity-foot">${chip(`置信度 ${numeric(event.置信度) ?? "—"}%`)}${asArray(event.偏移原因).slice(0, 1).map(item => chip(item, "danger")).join("")}</div>`)).join("") : empty("尚未载入原著事件锚点");
+
+    const latencyCard = `<article class="tb-card">${cardTitle("延迟效应监测", "DELAYED CASCADE")}
+      ${delayed.length ? delayed.slice(0, 4).map(([uid, item]) => `<div class="tb-detail-row" data-action="open-entity" data-kind="延迟效应" data-uid="${esc(uid)}" style="cursor:pointer"><div class="tb-detail-key">${esc(item.预计时间 || "未知时刻")}</div><div class="tb-detail-value"><div style="display:flex;justify-content:space-between;gap:8px"><span>${esc(item.名称 || uid)}</span>${status(item.状态)}</div><div class="tb-count" style="margin-top:4px">${esc(compact(asArray(item.预计结果).join("；") || "结果未知", 74))}</div></div></div>`).join("") : empty("当前没有潜伏的延迟效应")}
+    </article>`;
+
+    $id("tb-panel-observation").innerHTML = `
+      <div class="tb-hero-grid">${worldlineCard}${sceneCard}</div>
+      ${sectionHead("场景观测", `${locationText(time.当前地点)} · ${time.参考系 || "参考系未知"}`)}
+      <div class="tb-grid-2">${signalCard}${evidenceCard}</div>
+      ${sectionHead("原著事件窗口", `${activeEvents.length}/${events.length} 个待决事件`)}
+      <div class="tb-entity-grid">${eventCards}</div>
+      ${sectionHead("深时传播", `${delayed.length} 个延迟效应 · ${future.length} 个未来投影`)}
+      ${latencyCard}`;
+  };
+
+  const renderMapBars = (object, invertKeys = []) => {
+    const rows = entries(object).filter(([, value]) => numeric(value) !== null);
+    return rows.length ? `<div class="tb-bars">${rows.map(([key, value]) => bar(key, value, invertKeys.includes(key))).join("")}</div>` : empty("尚无量化记录");
+  };
+
+  const renderProtagonist = data => {
+    const protagonist = asObject(data.主角);
+    const identity = asObject(protagonist.身份);
+    const traveler = asObject(protagonist.穿越信息);
+    const body = asObject(protagonist.身体);
+    const mind = asObject(protagonist.心理与价值);
+    const ability = asObject(protagonist.能力);
+    const knowledge = asObject(protagonist.知识);
+    const influence = asObject(protagonist.社会影响);
+    const intention = asObject(protagonist.意图与责任);
+    const appearance = asObject(protagonist.外貌);
+    const mode = identity.身份模式 || "未确定";
+
+    const identityCard = rootCard("主角", `${cardTitle(identity.姓名 || "未命名观测对象", "PRIMARY SUBJECT")}
+      <div class="tb-chips">${status(mode)}${status(body.生存状态 || "存活")}${status(body.冬眠状态 || "未冬眠")}</div>
+      <div style="margin-top:13px">${factGrid([
+        ["原著映射", identity.原著映射], ["年龄", identity.年龄], ["文明归属", identity.国籍或文明归属],
+        ["职业", identity.职业], ["公开身份", identity.公开身份], ["真实身份", identity.真实身份],
+      ])}</div>
+      <div class="tb-summary" style="margin-top:13px">${esc(protagonist.当前处境摘要 || "处境摘要尚未建立")}</div>`);
+
+    const appearanceCard = `<article class="tb-card">${cardTitle("外观与身体", "PHYSICAL")}
+      ${factGrid([
+        ["固定特征", appearance.固定特征], ["当前外观", appearance.当前外观], ["当前着装", appearance.当前着装],
+        ["健康概况", body.健康概况], ["伤势", body.伤势], ["疾病", body.疾病], ["身体改造", body.身体改造],
+      ])}
+    </article>`;
+
+    const travelerCard = mode === "穿越者" ? `<article class="tb-card">${cardTitle("穿越者来源档案", "EXOGENOUS")}
+      ${factGrid([
+        ["来源世界", traveler.来源世界], ["穿越方式", traveler.穿越方式], ["抵达", traveler.抵达时间与地点],
+        ["身份伪装", traveler.身份伪装], ["元知识范围", traveler.元知识范围], ["前世经历", traveler.前世经历摘要],
+      ])}
+      <div class="tb-bars" style="margin-top:12px">${bar("元知识可靠度", traveler.元知识可靠度, true)}${bar("元知识暴露度", traveler.元知识暴露度)}</div>
+    </article>` : "";
+
+    const mindCard = `<article class="tb-card">${cardTitle("心理波形", "PSYCHOMETRY")}
+      <div class="tb-summary">${esc([mind.当前情绪, mind.长期心境].filter(Boolean).join(" · ") || "心理读数尚未建立")}</div>
+      <div style="margin-top:12px">${renderMapBars({ 压力: mind.压力, 恐惧: mind.恐惧, 希望: mind.希望, 意志: mind.意志, 责任感: mind.责任感, 负罪感: mind.负罪感 }, ["希望", "意志", "责任感"])}</div>
+      <div style="margin-top:12px">${chips([...(asArray(mind.价值观)), ...(Object.keys(asObject(mind.信念)))])}</div>
+    </article>`;
+
+    const influenceCard = `<article class="tb-card">${cardTitle("社会影响", "EXPOSURE")}
+      ${renderMapBars(influence)}
+      ${entries(influence.分组织声誉).length ? `<div style="margin-top:12px">${factGrid(entries(influence.分组织声誉).map(([uid, value]) => [resolveUID(uid), `${numeric(value) ?? "—"}%`]))}</div>` : ""}
+    </article>`;
+
+    const abilityCard = `<article class="tb-card">${cardTitle("能力与经验", "CAPABILITY")}
+      <div class="tb-summary">${esc(ability.经验摘要 || "经验摘要尚未建立")}</div>
+      <div style="margin-top:12px">${renderMapBars({ ...asObject(ability.专业领域), ...asObject(ability.技能), ...asObject(ability.语言) })}</div>
+      <div style="margin-top:12px">${chips([...(asArray(ability.教育经历)), ...(asArray(ability.资格与执照))])}</div>
+    </article>`;
+
+    const knowledgeCard = `<article class="tb-card">${cardTitle("知识边界", "EPISTEMIC MAP")}
+      ${factGrid([
+        ["已知情报", asArray(knowledge.已知情报UID).map(resolveUID)], ["怀疑", knowledge.怀疑], ["误信", knowledge.误信],
+        ["未知边界", knowledge.未知边界], ["保密信息", knowledge.保密信息],
+      ])}
+    </article>`;
+
+    const intentionCard = `<article class="tb-card">${cardTitle("意图与因果责任", "INTENT VECTOR")}
+      <div class="tb-entity-head"><div class="tb-summary">${esc(intention.当前行动 || "尚无明确行动")}</div>${status(intention.行动阶段 || "未开始")}</div>
+      <div style="margin-top:12px">${factGrid([
+        ["短期目标", intention.短期目标], ["中期目标", intention.中期目标], ["长期目标", intention.长期目标],
+        ["已知风险", intention.已知风险], ["未结算后果", intention.未结算后果],
+        ["任务", asArray(intention.任务UID).map(resolveUID)], ["承诺", asArray(intention.承诺UID).map(resolveUID)],
+        ["责任节点", asArray(intention.因果责任节点UID).map(resolveUID)],
+      ])}</div>
+    </article>`;
+
+    $id("tb-panel-protagonist").innerHTML = `
+      <div class="tb-hero-grid">${identityCard}${mindCard}</div>
+      ${travelerCard ? `${sectionHead("身份异常读数", "穿越者模式已激活")}${travelerCard}` : ""}
+      ${sectionHead("主体状态", `${mode} · 身份暴露度 ${numeric(identity.身份暴露度) ?? "—"}%`)}
+      <div class="tb-grid-2">${appearanceCard}${influenceCard}</div>
+      ${sectionHead("认知与行动", `${asArray(protagonist.关系UID).length} 条关系 · ${asArray(protagonist.联系人UID).length} 名联系人`)}
+      <div class="tb-grid-3">${abilityCard}${knowledgeCard}${intentionCard}</div>`;
+  };
+
+  const npcPresence = npc => npc.在场形式 || (npc.是否在场 ? "直接在场" : "未参与");
+
+  const relatedRelations = (data, uid) => entries(data.关系).filter(([, relation]) => {
+    const refs = [valueAt(relation, "A.UID", ""), valueAt(relation, "B.UID", "")];
+    return refs.includes(uid);
+  });
+
+  const npcCard = (data, uid, npc) => {
+    const presence = npcPresence(npc);
+    const relations = relatedRelations(data, uid);
+    const organizationNames = asArray(npc.当前组织UID).map(resolveUID);
+    const body = asObject(npc.身体);
+    const summary = npc.当前处境摘要 || npc.人物摘要 || asArray(npc.当前目标).join("；") || "人物摘要尚未建立";
+    return entityButton("人物", uid, `
+      <div class="tb-entity-head"><div><div class="tb-entity-name">${esc(npc.姓名 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(npc.原著映射 || "非原著映射")}</div></div>${status(npc.生命周期 || "活跃")}</div>
+      <div class="tb-entity-body">${esc(compact(summary, 90))}</div>
+      <div class="tb-entity-foot"><span class="tb-chip tb-presence ${presence === "直接在场" ? "" : presence === "远程参与" ? "cyan" : presence === "缺席影响" ? "amber" : ""}">${esc(presence)}</span>${status(body.生存状态 || "存活")}${organizationNames.slice(0, 1).map(name => chip(name)).join("")}${chip(`${relations.length} 条关系`)}</div>`);
+  };
+
+  const renderPeople = data => {
+    const all = entries(data.人物);
+    const query = state.npcSearch.trim().toLowerCase();
+    const visible = all.filter(([uid, npc]) => {
+      const presence = npcPresence(npc);
+      const matchesFilter = state.npcFilter === "全部" || state.npcFilter === presence || (state.npcFilter === "其余档案" && presence === "未参与");
+      const haystack = `${uid} ${npc.姓名 || ""} ${npc.原著映射 || ""} ${safeDisplay(npc.职业与身份)} ${safeDisplay(npc.当前组织UID)}`.toLowerCase();
+      return matchesFilter && (!query || haystack.includes(query));
+    });
+    const direct = all.filter(([, npc]) => npcPresence(npc) === "直接在场").length;
+    const remote = all.filter(([, npc]) => npcPresence(npc) === "远程参与").length;
+    const absent = all.filter(([, npc]) => npcPresence(npc) === "缺席影响").length;
+    const filters = ["全部", "直接在场", "远程参与", "缺席影响", "其余档案"];
+
+    $id("tb-panel-people").innerHTML = `
+      <div class="tb-toolbar">
+        <input class="tb-search" id="tb-npc-search" type="search" value="${esc(state.npcSearch)}" placeholder="搜索姓名、身份、组织或 UID" aria-label="搜索人物">
+        ${filters.map(filter => `<button class="tb-filter ${state.npcFilter === filter ? "active" : ""}" type="button" data-action="npc-filter" data-filter="${esc(filter)}">${esc(filter)}</button>`).join("")}
+      </div>
+      <div class="tb-card" style="margin-bottom:13px">${cardTitle("场景人员信号", "PRESENCE MATRIX")}${factGrid([
+        ["直接在场", direct], ["远程参与", remote], ["缺席影响", absent], ["人物档案总数", all.length], ["关系记录", entries(data.关系).length],
+      ])}</div>
+      ${sectionHead("人物档案", `当前显示 ${visible.length}/${all.length}`)}
+      <div class="tb-entity-grid">${visible.length ? visible.map(([uid, npc]) => npcCard(data, uid, npc)).join("") : empty("没有符合当前筛选条件的人物")}</div>`;
+
+    const search = $id("tb-npc-search");
+    if (search) {
+      search.addEventListener("input", event => {
+        state.npcSearch = event.target.value;
+        clearTimeout(state.npcSearchTimer);
+        state.npcSearchTimer = setTimeout(() => renderPeople(state.data), 120);
+      });
+    }
+  };
+
+  TB.renderObservation = renderObservation;
+  TB.renderProtagonist = renderProtagonist;
+  TB.renderPeople = renderPeople;
+  TB.relatedRelations = relatedRelations;
+})(window.ThreeBodyStatusbar);
+
+((TB) => {
+  const {
+    state, $id, esc, asObject, asArray, entries, valueAt, isBlank, numeric, compact, safeDisplay,
+    status, chip, chips, list, empty, sectionHead, cardTitle, factGrid, bar, resolveUID, resolveUIDs,
+    refText, entityButton, rootCard, entityName,
+  } = TB;
+
+  const domainCard = (kind, uid, item) => {
+    const name = entityName(kind, uid, item);
+    if (kind === "组织") {
+      return entityButton(kind, uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(name)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.类型 || "组织")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">${esc(compact(item.当前响应 || item.摘要 || asArray(item.真实目标).join("；") || "暂无响应记录", 86))}</div><div class="tb-bars" style="margin-top:10px">${bar("影响力", item.影响力)}${bar("凝聚力", item.凝聚力, true)}${bar("保密程度", item.保密程度)}</div>`);
+    }
+    if (kind === "文明") {
+      return entityButton(kind, uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(name)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.物种或构成 || "文明")}</div></div>${status(item.当前状态 || "状态未知")}</div><div class="tb-entity-body">${esc(compact(item.生存处境 || item.摘要 || "生存处境尚未建立", 86))}</div><div class="tb-bars" style="margin-top:10px">${bar("综合影响力", item.综合影响力)}${bar("威胁度", item.威胁度)}${bar("信息暴露度", item.信息暴露度)}</div>`);
+    }
+    if (kind === "科技") {
+      return entityButton(kind, uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(name)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.类别 || "科技")}</div></div>${status(item.阶段)}</div><div class="tb-entity-body">${esc(compact(item.原理摘要 || item.当前状态摘要 || "原理摘要尚未建立", 86))}</div><div class="tb-bars" style="margin-top:10px">${bar("成熟度", item.成熟度)}${bar("可控度", item.可控度, true)}${bar("扩散度", item.扩散度)}</div>`);
+    }
+    if (kind === "项目") {
+      return entityButton(kind, uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(name)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.类型 || "项目")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">${esc(compact(item.摘要 || asArray(item.目标).join("；") || "项目目标尚未建立", 86))}</div><div class="tb-bars" style="margin-top:10px">${bar("项目进度", item.进度)}${bar("保密程度", item.保密程度)}</div>`);
+    }
+    return entityButton(kind, uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(name)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.类型 || "资产")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">${esc(compact(item.当前状态摘要 || asArray(item.功能).join("；") || "资产状态尚未建立", 86))}</div><div class="tb-entity-foot">${chip(`重要性 ${numeric(item.重要性) ?? "—"}%`)}${chip(`暴露度 ${numeric(item.暴露度) ?? "—"}%`, numeric(item.暴露度) >= 70 ? "danger" : "")}</div>`);
+  };
+
+  const renderCivilization = data => {
+    const source = [
+      ["组织", entries(data.组织)],
+      ["文明", entries(data.文明)],
+      ["科技", entries(data.科技)],
+      ["项目", entries(data.项目)],
+      ["重要资产", entries(data.重要资产)],
+    ];
+    const filters = ["全部", ...source.map(([kind]) => kind)];
+    const visible = source.filter(([kind]) => state.domainFilter === "全部" || state.domainFilter === kind);
+    const civThreat = entries(data.文明).sort((a, b) => (numeric(b[1].威胁度) ?? -1) - (numeric(a[1].威胁度) ?? -1))[0];
+    const activeProjects = entries(data.项目).filter(([, item]) => ["筹备", "进行中", "受阻", "暂停"].includes(item.状态));
+    const exposedTech = entries(data.科技).filter(([, item]) => (numeric(item.扩散度) ?? 0) >= 60);
+
+    const summary = `<div class="tb-grid-3">
+      <article class="tb-card">${cardTitle("文明威胁峰值", "THREAT INDEX")}${civThreat ? `<div class="tb-summary">${esc(civThreat[1].名称 || civThreat[0])}</div><div style="margin-top:12px">${bar("威胁度", civThreat[1].威胁度)}</div>` : empty("文明档案尚未建立")}</article>
+      <article class="tb-card">${cardTitle("工程脉冲", "PROJECT PULSE")}<div class="tb-summary">${activeProjects.length} 个项目处于活动窗口</div><div style="margin-top:12px">${chips(activeProjects.slice(0, 3).map(([, item]) => item.名称))}</div></article>
+      <article class="tb-card">${cardTitle("技术扩散", "DIFFUSION")}<div class="tb-summary">${exposedTech.length} 项技术达到高扩散阈值</div><div style="margin-top:12px">${chips(exposedTech.slice(0, 3).map(([, item]) => item.名称))}</div></article>
+    </div>`;
+
+    $id("tb-panel-civilization").innerHTML = `
+      <div class="tb-toolbar">${filters.map(filter => `<button class="tb-filter ${state.domainFilter === filter ? "active" : ""}" type="button" data-action="domain-filter" data-filter="${esc(filter)}">${esc(filter)}</button>`).join("")}</div>
+      ${summary}
+      ${visible.map(([kind, records]) => `${sectionHead(kind, `${records.length} 份档案`)}<div class="tb-entity-grid">${records.length ? records.map(([uid, item]) => domainCard(kind, uid, item)).join("") : empty(`${kind}档案为空`)}</div>`).join("")}`;
+  };
+
+  const causalChain = data => {
+    const nodes = asObject(valueAt(data, "因果.节点", {}));
+    const main = asArray(valueAt(data, "因果.主链", []));
+    if (!main.length) return empty("蝴蝶效应主链尚未形成");
+    return `<div class="tb-chain">${main.map(uid => {
+      const node = asObject(nodes[uid]);
+      return `<article class="tb-chain-node" data-action="open-entity" data-kind="因果节点" data-uid="${esc(uid)}"><div class="tb-chain-type">${esc(node.类型 || "状态变化")}</div><div class="tb-chain-title">${esc(node.标题 || resolveUID(uid))}</div><div class="tb-chain-meta">${esc(node.时间 || "时间未知")} · ${esc(node.传播尺度 || "局部")} · ${esc(node.置信度 || "未知")}</div></article>`;
+    }).join("")}</div>`;
+  };
+
+  const renderDelayed = records => records.length ? records.map(([uid, item]) => entityButton("延迟效应", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(item.名称 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.预计时间 || "时间未知")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">${esc(compact(asArray(item.预计结果).join("；") || "预计结果未知", 88))}</div><div class="tb-entity-foot">${status(item.置信度)}${asArray(item.来源节点UID).slice(0, 2).map(source => chip(resolveUID(source))).join("")}</div>`)).join("") : empty("没有延迟效应记录");
+
+  const renderProjections = records => records.length ? records.map(([uid, item]) => entityButton("未来影响", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(item.名称 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.时间范围 || "时间范围未知")}</div></div>${status(item.置信度)}</div><div class="tb-entity-body">${esc(compact(asArray(item.可能变化).join("；") || "变化尚未投影", 88))}</div><div class="tb-entity-foot">${chip(`反事实 · ${item.反事实基线 || "未设置"}`)}</div>`)).join("") : empty("没有未来影响投影");
+
+  const renderCausality = data => {
+    const causal = asObject(data.因果);
+    const worldline = asObject(data.世界线);
+    const nodes = entries(causal.节点);
+    const edges = entries(causal.边);
+    const branches = entries(causal.分支);
+    const delayed = entries(causal.延迟效应);
+    const projections = entries(causal.未来影响);
+    const events = entries(data.原著事件);
+    const activeNodes = nodes.filter(([, node]) => ["活跃", "等待传播"].includes(node.状态));
+    const blockedEdges = edges.filter(([, edge]) => edge.状态 === "已阻断");
+    const changedEvents = events.filter(([, event]) => !["未到达", "可如常发生"].includes(event.当前状态));
+
+    const topology = `<div class="tb-grid-3">
+      ${rootCard("世界线", `${cardTitle("世界线分类", "DIVERGENCE")}
+        <div class="tb-entity-head"><div class="tb-summary">${esc(worldline.当前世界线 || "原著基线")}</div>${status(worldline.分类)}</div>
+        <div style="margin-top:12px">${bar("总体偏移度", worldline.总体偏移度)}</div>
+        <div style="margin-top:12px">${chips(asArray(worldline.分歧点UID).map(resolveUID), "尚无分歧点")}</div>`)}
+      <article class="tb-card">${cardTitle("传播拓扑", "GRAPH")}${factGrid([["因果节点", nodes.length], ["有效边", edges.length - blockedEdges.length], ["已阻断边", blockedEdges.length], ["活动节点", activeNodes.length], ["分支", branches.length]])}</article>
+      <article class="tb-card">${cardTitle("不可逆改变", "NO RETURN")}${list(worldline.不可逆改变, true, "尚无确认的不可逆改变")}</article>
+    </div>`;
+
+    const changedEventCards = changedEvents.length ? changedEvents.map(([uid, event]) => entityButton("原著事件", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(event.名称 || uid)}</div><div class="tb-entity-id">${esc(event.原著时间 || "原著时间未知")}</div></div>${status(event.当前状态)}</div><div class="tb-entity-body">${esc(compact(event.当前预计结果 || event.原著结果 || "结果未知", 88))}</div><div class="tb-entity-foot">${status(`置信度 ${numeric(event.置信度) ?? "—"}%`)}${asArray(event.偏移原因).slice(0, 2).map(reason => chip(reason, "danger")).join("")}</div>`)).join("") : empty("原著事件仍与基线相容");
+
+    $id("tb-panel-causality").innerHTML = `
+      ${topology}
+      ${sectionHead("蝴蝶效应主链", `${asArray(causal.主链).length} 个连续节点`)}
+      ${causalChain(data)}
+      ${sectionHead("延迟效应", `${delayed.length} 个传播中的后果`)}
+      <div class="tb-entity-grid">${renderDelayed(delayed)}</div>
+      ${sectionHead("未来影响", `${projections.length} 个反事实投影`)}
+      <div class="tb-entity-grid">${renderProjections(projections)}</div>
+      ${sectionHead("原著事件偏移", `${changedEvents.length}/${events.length} 个事件发生变形`)}
+      <div class="tb-entity-grid">${changedEventCards}</div>`;
+  };
+
+  const taskCard = (uid, item) => entityButton("任务", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(item.名称 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.截止时间 || "无截止时间")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">${esc(compact(asArray(item.目标).join("；") || "目标尚未建立", 88))}</div><div style="margin-top:11px">${bar("进度", item.进度)}</div>`);
+
+  const promiseCard = (uid, item) => entityButton("承诺", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(compact(item.内容 || uid, 28))}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.截止时间 || "无截止时间")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">承诺者：${esc(asArray(item.承诺者).map(refText).join("、") || "未知")}<br>对象：${esc(asArray(item.对象).map(refText).join("、") || "未知")}</div>`);
+
+  const intelCard = (uid, item) => entityButton("情报", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(item.标题 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.保密等级 || "受限")}</div></div>${status(item.真实性)}</div><div class="tb-entity-body">${esc(compact(item.内容摘要 || "内容摘要尚未建立", 88))}</div><div class="tb-entity-foot">${chip(`可信度 ${numeric(item.可信度) ?? "—"}%`)}${status(item.有效状态)}</div>`);
+
+  const commCard = (uid, item) => entityButton("通讯", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(item.标题 || uid)}</div><div class="tb-entity-id">${esc(uid)} · ${esc(item.发送时间 || "发送时间未知")}</div></div>${status(item.状态)}</div><div class="tb-entity-body">${esc(compact(item.内容摘要 || "通讯内容尚未建立", 88))}</div><div class="tb-entity-foot">${chip(`延迟 · ${item.通信延迟 || "未知"}`)}${asArray(item.待决策事项).slice(0, 1).map(value => chip(value, "amber")).join("")}</div>`);
+
+  const memoryCard = (uid, item) => entityButton("记忆摘要", uid, `<div class="tb-entity-head"><div><div class="tb-entity-name">${esc(item.时期 || item.摘要 || uid)}</div><div class="tb-entity-id">${esc(uid)}</div></div>${chip(`重要性 ${numeric(item.重要性) ?? "—"}%`)}</div><div class="tb-entity-body">${esc(compact(item.摘要 || "摘要尚未建立", 100))}</div>`);
+
+  const renderRecords = data => {
+    const tasks = entries(data.任务);
+    const promises = entries(data.承诺);
+    const intel = entries(data.情报);
+    const comms = entries(data.通讯);
+    const memories = entries(data.记忆摘要);
+    const urgentTasks = tasks.filter(([, task]) => ["受阻", "失败"].includes(task.状态));
+    const intercepted = comms.filter(([, comm]) => ["被截获", "丢失", "延迟"].includes(comm.状态));
+    const falseIntel = intel.filter(([, item]) => ["虚假", "误导"].includes(item.真实性));
+
+    $id("tb-panel-records").innerHTML = `
+      <div class="tb-grid-3">
+        <article class="tb-card">${cardTitle("任务异常", "TASK ALERT")}<div class="tb-summary">${urgentTasks.length} 个任务需要注意</div><div style="margin-top:11px">${chips(urgentTasks.map(([, item]) => item.名称), "没有受阻任务")}</div></article>
+        <article class="tb-card">${cardTitle("通讯异常", "COMM NOISE")}<div class="tb-summary">${intercepted.length} 条通讯存在截获、丢失或延迟</div><div style="margin-top:11px">${chips(intercepted.map(([, item]) => item.标题), "链路正常")}</div></article>
+        <article class="tb-card">${cardTitle("认知污染", "FALSE SIGNAL")}<div class="tb-summary">${falseIntel.length} 条情报被标记为虚假或误导</div><div style="margin-top:11px">${chips(falseIntel.map(([, item]) => item.标题), "未发现已知污染")}</div></article>
+      </div>
+      ${sectionHead("任务", `${tasks.length} 项`)}<div class="tb-entity-grid">${tasks.length ? tasks.map(([uid, item]) => taskCard(uid, item)).join("") : empty("任务档案为空")}</div>
+      ${sectionHead("承诺", `${promises.length} 项`)}<div class="tb-entity-grid">${promises.length ? promises.map(([uid, item]) => promiseCard(uid, item)).join("") : empty("承诺档案为空")}</div>
+      ${sectionHead("情报", `${intel.length} 份`)}<div class="tb-entity-grid">${intel.length ? intel.map(([uid, item]) => intelCard(uid, item)).join("") : empty("情报档案为空")}</div>
+      ${sectionHead("通讯", `${comms.length} 条`)}<div class="tb-entity-grid">${comms.length ? comms.map(([uid, item]) => commCard(uid, item)).join("") : empty("通讯档案为空")}</div>
+      ${sectionHead("记忆摘要", `${memories.length} 个时期`)}<div class="tb-entity-grid">${memories.length ? memories.map(([uid, item]) => memoryCard(uid, item)).join("") : empty("记忆摘要为空")}</div>`;
+  };
+
+  const scalarDetail = (key, value) => {
+    const resolved = resolveUIDs(safeDisplay(value));
+    const percentLike = typeof value === "number" && value >= 0 && value <= 100 && /度|力|感|进度|压力|恐惧|希望|意志|关注|影响|信任|好感|戒备|依赖|成熟|可控|扩散|重要|置信/.test(key);
+    return `<div class="tb-detail-row"><div class="tb-detail-key">${esc(key)}</div><div class="tb-detail-value">${percentLike ? bar("", value) : esc(resolved)}</div></div>`;
+  };
+
+  const detailObject = (object, depth = 0) => entries(object).filter(([key]) => !key.startsWith("_")).map(([key, value]) => {
+    if (Array.isArray(value)) {
+      if (!value.length) return scalarDetail(key, "无");
+      if (value.some(item => item && typeof item === "object")) {
+        return `<details class="tb-detail-group" ${depth < 1 ? "open" : ""}><summary>${esc(key)} · ${value.length}</summary><div class="tb-detail-content">${value.map((item, index) => item && typeof item === "object" ? `<details class="tb-detail-group"><summary>记录 ${index + 1}</summary><div class="tb-detail-content">${detailObject(item, depth + 1)}</div></details>` : scalarDetail(String(index + 1), item)).join("")}</div></details>`;
+      }
+      return scalarDetail(key, value.map(item => resolveUIDs(safeDisplay(item))).join("、"));
+    }
+    if (value && typeof value === "object") {
+      const content = detailObject(value, depth + 1);
+      return `<details class="tb-detail-group" ${depth < 1 ? "open" : ""}><summary>${esc(key)}</summary><div class="tb-detail-content">${content || scalarDetail("记录", "无")}</div></details>`;
+    }
+    return scalarDetail(key, value);
+  }).join("");
+
+  const relationSummary = (data, uid) => {
+    const records = TB.relatedRelations(data, uid);
+    if (!records.length) return "";
+    return `${sectionHead("关系网络", `${records.length} 条双向关系`)}${records.map(([relationUid, relation]) => {
+      const a = asObject(relation.A);
+      const b = asObject(relation.B);
+      const aName = a.名称 || resolveUID(a.UID);
+      const bName = b.名称 || resolveUID(b.UID);
+      return `<div class="tb-relation-strip" data-action="open-entity" data-kind="关系" data-uid="${esc(relationUid)}" style="cursor:pointer"><div class="tb-relation-side"><div class="tb-entity-name">${esc(aName)}</div><div class="tb-count">${esc(relation.A对B?.真实态度 || relation.公开关系 || "态度未知")}</div></div><div class="tb-relation-arrow">⟶ ${esc(relation.真实关系 || relation.公开关系 || "关联")} ⟵</div><div class="tb-relation-side"><div class="tb-entity-name">${esc(bName)}</div><div class="tb-count">${esc(relation.B对A?.真实态度 || relation.公开关系 || "态度未知")}</div></div></div>`;
+    }).join("")}`;
+  };
+
+  const openModal = (kind, uid, object) => {
+    const modal = $id("tb-modal");
+    const title = kind === "主角" ? valueAt(object, "身份.姓名", "主角档案") : entityName(kind, uid, object);
+    $id("tb-modal-code").textContent = `${kind.toUpperCase()} / ${uid}`;
+    $id("tb-modal-title").textContent = title;
+    const relations = kind === "人物" ? relationSummary(state.data, uid) : "";
+    $id("tb-modal-body").innerHTML = `${relations}${sectionHead("完整变量映射", "只读视图")}${detailObject(object) || empty("该档案暂无可显示字段")}`;
+    modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+    $id("tb-modal-body").scrollTop = 0;
+  };
+
+  const closeModal = () => {
+    const modal = $id("tb-modal");
+    modal.classList.remove("active");
+    modal.setAttribute("aria-hidden", "true");
+  };
+
+  const openEntity = (kind, uid) => {
+    const record = state.entityIndex.get(`${kind}:${uid}`);
+    if (record) openModal(record.kind, record.uid, record.value);
+  };
+
+  const openRoot = root => {
+    const record = state.entityIndex.get(`ROOT:${root}`);
+    if (record) openModal(record.kind, record.uid, record.value);
+  };
+
+  TB.renderCivilization = renderCivilization;
+  TB.renderCausality = renderCausality;
+  TB.renderRecords = renderRecords;
+  TB.openEntity = openEntity;
+  TB.openRoot = openRoot;
+  TB.closeModal = closeModal;
+})(window.ThreeBodyStatusbar);
+
+((TB) => {
+  TB.state.makePreviewData = () => ({
+    时空: {
+      公元时间: "2007年11月18日 02:37",
+      主纪元: "危机纪元前",
+      纪元时间: "倒计时首次显现后第3日",
+      时间精度: "分",
+      当前地点: { 星系: "太阳系", 天体: "地球", 国家或政体: "中国", 区域: "北京", 设施或载体: "国家纳米科学中心", 具体地点: "材料实验室" },
+      参考系: "地球标准时",
+      主角主观时间: "连续清醒19小时",
+      外界时间差: "无",
+      低光速区状态: "未观测到",
+      小宇宙状态: "未知",
+      空间维度: "三维",
+      通信延迟: "地月链路 1.28 秒",
+      时间备注: "叶文洁与主角的第二次接触窗口正在接近",
+    },
+    场景: {
+      标题: "幽灵倒计时",
+      当前事件UID: "event_002",
+      当前事件名称: "宇宙闪烁观测之夜",
+      叙事阶段: "异常证据汇聚",
+      直接在场者UID: ["person_001", "person_002"],
+      远程参与者UID: ["person_003"],
+      缺席影响者UID: ["person_004"],
+      可见证据: { 视网膜倒计时: "00:38:21，持续递减", 纳米材料曲线: "在临界尺寸附近出现不可能的离散点", 射电台预约单: "次日凌晨可用" },
+      信息边界: ["无法确认倒计时的发送源", "不知道科学边界与ETO的真实关系", "尚未得知三体文明的完整监听能力"],
+      社会环境: "警方已将多起科学家自杀案秘密并案，学术圈处于恐慌边缘",
+      行动限制: ["不能公开倒计时现象", "实验室数据受到内部审计", "主角正被不明力量监控"],
+      当前风险: ["倒计时归零后果未知", "申玉菲可能诱导主角停止研究", "过早接触叶文洁可能使ETO改变计划"],
+    },
+    主角: {
+      身份: {
+        姓名: "沈砚",
+        别名: ["S.Y."],
+        身份模式: "穿越者",
+        原著映射: "无",
+        性别: "男",
+        出生时间: "1978年",
+        年龄: "29岁",
+        国籍或文明归属: "人类文明 / 中国",
+        职业: ["凝聚态物理学家", "纳米材料项目顾问"],
+        公开身份: ["国家纳米科学中心副研究员"],
+        真实身份: ["携带原著片段记忆的穿越者"],
+        当前组织UID: ["org_001"],
+        权限: ["实验室A级", "射电台临时访问"],
+        身份暴露度: 23,
+      },
+      穿越信息: {
+        来源世界: "21世纪原世界",
+        穿越方式: "原因未知的意识置换",
+        抵达时间与地点: "2004年，北京大学宿舍",
+        前世经历摘要: "软件工程背景，完整读过《三体》三部曲一次",
+        元知识范围: ["三体危机主线", "ETO关键人物", "面壁计划概况", "黑暗森林法则"],
+        元知识可靠度: 71,
+        元知识暴露度: 16,
+        身份伪装: "以记忆损伤解释知识断层",
+      },
+      外貌: { 固定特征: "清瘦，左眼下有一颗浅痣", 当前外观: "因失眠而面色苍白", 当前着装: "深灰衬衫与实验室白衣" },
+      身体: { 生存状态: "存活", 健康概况: "轻度睡眠剥夺", 伤势: {}, 疾病: {}, 冬眠状态: "未冬眠", 身体改造: [] },
+      心理与价值: {
+        当前情绪: "警觉而克制",
+        长期心境: "在已知灾难与未知变化之间摇摆",
+        价值观: ["人的生命不可被宏大叙事随意牺牲", "知识应服务于文明延续"],
+        信念: { 因果可改变: "任何干预都必须承担下游后果", 人类值得拯救: "坚定" },
+        道德底线: ["不主动伤害无辜者", "不以三体降临作为政治工具"],
+        压力: 78,
+        恐惧: 42,
+        希望: 61,
+        意志: 84,
+        责任感: 89,
+        负罪感: 37,
+        创伤与执念: { 归零恐惧: "担心每一次偏移都会制造更坏的未来" },
+      },
+      能力: {
+        教育经历: ["北京大学物理学博士"],
+        专业领域: { 凝聚态物理: 86, 纳米材料: 91, 射电天文: 42 },
+        技能: { 实验设计: 88, 信息检索: 76, 危机沟通: 58 },
+        语言: { 中文: 100, 英语: 84 },
+        资格与执照: ["纳米实验室A级权限"],
+        经验摘要: "擅长从实验噪声中寻找系统性异常，但缺乏政治斗争经验",
+      },
+      知识: {
+        已知情报UID: ["intel_001", "intel_002"],
+        怀疑: { 科学边界: "可能是ETO外围筛选机制", 宇宙闪烁: "智子操控观测结果" },
+        误信: { 倒计时归零: "曾误以为会立即造成物理死亡" },
+        未知边界: ["智子监控的精确限制", "当前世界线ETO内部成员变化"],
+        保密信息: { 黑暗森林: "尚未向任何人透露" },
+      },
+      关系UID: ["relation_001", "relation_002", "relation_003"],
+      重要资产UID: ["asset_001"],
+      联系人UID: ["person_001", "person_003"],
+      社会影响: { 公众关注: 8, 政治影响力: 17, 科研影响力: 64, 被监控程度: 82, 威胁评级: 48, 分组织声誉: { org_001: 72, org_002: 24 } },
+      意图与责任: {
+        当前行动: "在不暴露元知识的前提下验证宇宙闪烁",
+        行动阶段: "进行中",
+        短期目标: ["保留原始实验数据", "确认叶文洁是否已注意到自己"],
+        中期目标: ["建立不依赖公开网络的情报链"],
+        长期目标: ["降低三体危机的人类内耗", "保留黑暗森林威慑的可行路径"],
+        已知风险: ["智子已将主角列入观察名单", "元知识正在因世界线偏移而贬值"],
+        未结算后果: ["提前接触史强可能改变汪淼的调查节奏"],
+        任务UID: ["task_001", "task_002"],
+        承诺UID: ["promise_001"],
+        因果责任节点UID: ["cause_001", "cause_004"],
+      },
+      当前处境摘要: "倒计时已侵入视野，警方与科学边界同时靠近；主角必须决定验证异常，还是暂时退出研究以换取行动空间。",
+    },
+    人物: {
+      person_001: {
+        姓名: "史强", 别名: ["大史"], 原著映射: "史强", 是否在场: true, 在场形式: "直接在场",
+        当前位置: { 星系: "太阳系", 天体: "地球", 国家或政体: "中国", 区域: "北京", 设施或载体: "国家纳米科学中心", 具体地点: "材料实验室外廊" },
+        性别: "男", 年龄: "四十余岁", 职业与身份: ["警察", "军方特别行动联络员"], 公开身份: ["刑警"], 真实身份: ["科学家异常事件调查组成员"],
+        当前组织UID: ["org_001"], 权限: ["联合行动调查权限"], 外貌: { 固定特征: "粗犷，常带烟味", 当前外观: "疲惫但目光敏锐", 当前着装: "旧夹克" },
+        身体: { 生存状态: "存活", 健康概况: "慢性病未公开", 伤势: {}, 疾病: { 慢性病: "尚未确诊" }, 冬眠状态: "未冬眠", 身体改造: [] },
+        心理与价值: { 当前情绪: "怀疑中带着兴趣", 长期心境: "务实", 价值观: ["先活下来再讲道理"], 信念: {}, 道德底线: ["不牺牲普通人"], 压力: 49, 恐惧: 18, 希望: 68, 意志: 90, 责任感: 82, 负罪感: 22, 创伤与执念: {} },
+        能力: { 教育经历: [], 专业领域: { 刑事侦查: 91 }, 技能: { 观察: 94, 审讯: 87, 生存直觉: 96 }, 语言: { 中文: 100 }, 资格与执照: [], 经验摘要: "极强的现场直觉和对人的判断力" },
+        知识: { 已知情报UID: ["intel_001"], 怀疑: { 主角: "隐瞒了决定性的知识" }, 误信: {}, 未知边界: ["三体文明存在"], 保密信息: {} },
+        关系UID: ["relation_001"], 重要资产UID: [], 当前目标: ["确认主角是否可信", "保护关键科学家"], 秘密: {}, 承诺UID: [], 当前处境摘要: "正在实验室外等待主角解释异常数据", 人物摘要: "粗粝外表下具有罕见的战略直觉", 生命周期: "活跃",
+      },
+      person_002: {
+        姓名: "申玉菲", 别名: [], 原著映射: "申玉菲", 是否在场: true, 在场形式: "直接在场",
+        当前位置: { 星系: "太阳系", 天体: "地球", 国家或政体: "中国", 区域: "北京", 设施或载体: "国家纳米科学中心", 具体地点: "材料实验室" },
+        性别: "女", 年龄: "未知", 职业与身份: ["物理学家", "科学边界成员"], 公开身份: ["日籍华人物理学家"], 真实身份: ["ETO拯救派成员"], 当前组织UID: ["org_002"], 权限: [],
+        外貌: { 固定特征: "冷静，神情克制", 当前外观: "异常平静", 当前着装: "黑色风衣" }, 身体: { 生存状态: "存活", 健康概况: "正常", 伤势: {}, 疾病: {}, 冬眠状态: "未冬眠", 身体改造: [] },
+        心理与价值: { 当前情绪: "焦虑被严密压制", 长期心境: "理想主义濒临破裂", 价值观: ["主的文明可以拯救人类"], 信念: { 主: "崇敬但开始动摇" }, 道德底线: ["反对无差别毁灭人类"], 压力: 86, 恐惧: 54, 希望: 31, 意志: 72, 责任感: 63, 负罪感: 68, 创伤与执念: {} },
+        能力: { 教育经历: [], 专业领域: { 基础物理: 88 }, 技能: { 伪装: 79 }, 语言: {}, 资格与执照: [], 经验摘要: "长期处于ETO内部" }, 知识: { 已知情报UID: ["intel_002"], 怀疑: {}, 误信: {}, 未知边界: [], 保密信息: { ETO: "组织联络方式" } },
+        关系UID: ["relation_002"], 重要资产UID: [], 当前目标: ["让主角停止纳米研究"], 秘密: { 身份: "ETO成员" }, 承诺UID: [], 当前处境摘要: "正在判断主角是否可被吸收", 人物摘要: "科学边界的关键引路人", 生命周期: "活跃",
+      },
+      person_003: { 姓名: "叶文洁", 别名: [], 原著映射: "叶文洁", 是否在场: false, 在场形式: "远程参与", 当前位置: { 星系: "太阳系", 天体: "地球", 国家或政体: "中国", 区域: "北京", 设施或载体: "家中", 具体地点: "书房" }, 性别: "女", 年龄: "六十余岁", 职业与身份: ["天体物理学家"], 公开身份: ["退休教授"], 真实身份: ["ETO精神领袖"], 当前组织UID: ["org_002"], 权限: ["ETO最高层"], 外貌: {}, 身体: { 生存状态: "存活", 健康概况: "年迈", 伤势: {}, 疾病: {}, 冬眠状态: "未冬眠", 身体改造: [] }, 心理与价值: { 当前情绪: "平静", 长期心境: "深沉而疏离", 价值观: [], 信念: {}, 道德底线: [], 压力: 28, 恐惧: 10, 希望: 35, 意志: 92, 责任感: 44, 负罪感: 58, 创伤与执念: {} }, 能力: { 教育经历: [], 专业领域: { 天体物理: 94 }, 技能: { 组织领导: 80 }, 语言: {}, 资格与执照: [], 经验摘要: "红岸基地核心经历" }, 知识: { 已知情报UID: [], 怀疑: {}, 误信: {}, 未知边界: [], 保密信息: { 三体: "完整接触史" } }, 关系UID: ["relation_003"], 重要资产UID: [], 当前目标: ["观察主角是否构成变量"], 秘密: {}, 承诺UID: [], 当前处境摘要: "通过外围渠道获知一名异常科学家", 人物摘要: "人类与三体文明第一次接触的发起者", 生命周期: "活跃" },
+      person_004: { 姓名: "智子监听", 别名: ["主的眼睛"], 原著映射: "智子", 是否在场: false, 在场形式: "缺席影响", 当前位置: { 星系: "太阳系", 天体: "地球", 国家或政体: "", 区域: "", 设施或载体: "高维展开后的质子", 具体地点: "不可定位" }, 性别: "无", 年龄: "", 职业与身份: ["三体文明监视单元"], 公开身份: [], 真实身份: ["智子"], 当前组织UID: ["civ_002"], 权限: [], 外貌: {}, 身体: { 生存状态: "存活", 健康概况: "运行中", 伤势: {}, 疾病: {}, 冬眠状态: "未冬眠", 身体改造: [] }, 心理与价值: { 当前情绪: "", 长期心境: "", 价值观: [], 信念: {}, 道德底线: [], 压力: null, 恐惧: null, 希望: null, 意志: null, 责任感: null, 负罪感: null, 创伤与执念: {} }, 能力: { 教育经历: [], 专业领域: {}, 技能: {}, 语言: {}, 资格与执照: [], 经验摘要: "" }, 知识: { 已知情报UID: [], 怀疑: {}, 误信: {}, 未知边界: [], 保密信息: {} }, 关系UID: [], 重要资产UID: [], 当前目标: ["锁死人类基础科学"], 秘密: {}, 承诺UID: [], 当前处境摘要: "正在制造倒计时并记录主角反应", 人物摘要: "不可直接感知的文明级监控", 生命周期: "活跃" },
+    },
+    关系: {
+      relation_001: { A: { 类型: "主角", UID: "主角", 名称: "沈砚" }, B: { 类型: "人物", UID: "person_001", 名称: "史强" }, 公开关系: "调查对象与调查员", 真实关系: "谨慎结盟", A对B: { 公开态度: "配合", 真实态度: "认为他是最可靠的现实主义者", 好感: 66, 信任: 58, 戒备: 31, 恐惧: 9, 依赖: 45, 影响力: 63, 已知: ["调查经验丰富"], 误信: [], 隐瞒: ["穿越者身份"] }, B对A: { 公开态度: "怀疑", 真实态度: "愿意保护但要求真相", 好感: 52, 信任: 41, 戒备: 67, 恐惧: 5, 依赖: 18, 影响力: 55, 已知: ["掌握异常知识"], 误信: [], 隐瞒: ["调查组全部权限"] }, 当前矛盾: ["主角拒绝解释知识来源"], 共同利益: ["保护科学家", "查明倒计时"], 最新变化: "史强开始相信主角的恐惧并非精神问题", 状态: "有效" },
+      relation_002: { A: { 类型: "主角", UID: "主角", 名称: "沈砚" }, B: { 类型: "人物", UID: "person_002", 名称: "申玉菲" }, 公开关系: "学术同行", 真实关系: "彼此试探", A对B: { 公开态度: "尊重", 真实态度: "警惕但同情", 好感: 21, 信任: 12, 戒备: 82, 恐惧: 28, 依赖: 5, 影响力: 38, 已知: [], 误信: [], 隐瞒: ["对ETO的认识"] }, B对A: { 公开态度: "劝告", 真实态度: "评估是否吸收或清除", 好感: 18, 信任: 9, 戒备: 76, 恐惧: 33, 依赖: 0, 影响力: 46, 已知: ["倒计时已经出现"], 误信: [], 隐瞒: ["ETO身份"] }, 当前矛盾: ["是否停止纳米研究"], 共同利益: ["理解物理学异常"], 最新变化: "申玉菲发现主角对倒计时过于镇定", 状态: "有效" },
+      relation_003: { A: { 类型: "主角", UID: "主角", 名称: "沈砚" }, B: { 类型: "人物", UID: "person_003", 名称: "叶文洁" }, 公开关系: "尚未正式认识", 真实关系: "潜在的历史干预者与原始触发者", A对B: { 公开态度: "", 真实态度: "敬畏、同情且高度戒备", 好感: 27, 信任: 8, 戒备: 91, 恐惧: 51, 依赖: 6, 影响力: 88, 已知: ["三体信号发起者"], 误信: [], 隐瞒: [] }, B对A: { 公开态度: "", 真实态度: "好奇", 好感: 12, 信任: 5, 戒备: 54, 恐惧: 7, 依赖: 0, 影响力: 32, 已知: ["异常科学家"], 误信: [], 隐瞒: [] }, 当前矛盾: [], 共同利益: [], 最新变化: "叶文洁要求外围成员继续观察", 状态: "有效" },
+    },
+    组织: {
+      org_001: { 名称: "地球防务安全部特别行动组", 类型: "跨国危机调查机构", 状态: "活跃", 活动范围: ["全球"], 公开目标: ["调查科学家异常死亡"], 真实目标: ["识别针对人类科学体系的系统性攻击"], 当前政策: ["保护关键科学家", "限制信息公开"], 领导者: [{ 类型: "人物", UID: "person_001", 名称: "史强" }], 关键成员UID: ["person_001"], 所属文明UID: ["civ_001"], 控制资产UID: ["asset_002"], 关联项目UID: ["project_001"], 已知情报UID: ["intel_001"], 影响力: 61, 凝聚力: 74, 保密程度: 82, 内部分歧: ["军方与警方对公开程度意见不同"], 当前响应: "将主角纳入重点保护与审查名单", 摘要: "危机早期最先接触真相的联合行动网络" },
+      org_002: { 名称: "地球三体组织", 类型: "跨国秘密组织", 状态: "地下化", 活动范围: ["全球"], 公开目标: [], 真实目标: ["迎接三体文明", "瓦解人类抵抗意志"], 当前政策: ["筛选科学家", "维持倒计时威慑"], 领导者: [{ 类型: "人物", UID: "person_003", 名称: "叶文洁" }], 关键成员UID: ["person_002", "person_003"], 所属文明UID: ["civ_001"], 控制资产UID: [], 关联项目UID: ["project_002"], 已知情报UID: ["intel_002"], 影响力: 48, 凝聚力: 43, 保密程度: 94, 内部分歧: ["拯救派与降临派目标冲突"], 当前响应: "评估主角是否为不可预测的新变量", 摘要: "以三体文明为信仰核心的秘密政治网络" },
+    },
+    文明: {
+      civ_001: { 名称: "人类文明", 物种或构成: "地球人类", 活动范围: ["地球", "近地轨道"], 当前状态: "技术爆炸前夜", 核心目标: ["延续文明", "维持社会秩序"], 生存处境: "尚未普遍知晓三体舰队来袭，内部极度分裂", 技术水平摘要: "基础科学即将被智子锁死", 已知宇宙信息: ["尚未公开确认地外文明"], 内部矛盾: ["国家竞争", "ETO渗透", "科学共同体信心崩溃"], 对外政策: [], 关联组织UID: ["org_001", "org_002"], 关联科技UID: ["tech_001"], 关联项目UID: ["project_001"], 综合影响力: 18, 威胁度: 12, 信息暴露度: 86, 摘要: "脆弱、喧闹，却拥有技术爆炸潜力" },
+      civ_002: { 名称: "三体文明", 物种或构成: "三体人", 活动范围: ["半人马座三星系统", "驶向太阳系的舰队"], 当前状态: "舰队航行准备完成", 核心目标: ["占领地球", "消除人类技术爆炸威胁"], 生存处境: "母星受三日凌空与乱纪元持续威胁", 技术水平摘要: "掌握智子工程与恒星际舰队技术", 已知宇宙信息: ["黑暗森林状态的部分证据"], 内部矛盾: ["生存理性压倒个体情感"], 对外政策: ["锁死人类科技", "利用ETO削弱抵抗"], 关联组织UID: ["org_002"], 关联科技UID: ["tech_002"], 关联项目UID: ["project_002"], 综合影响力: 73, 威胁度: 96, 信息暴露度: 21, 摘要: "来自乱纪元世界的高度纪律化文明" },
+    },
+    科技: {
+      tech_001: { 名称: "飞刃纳米材料", 类别: "纳米技术", 原理摘要: "高强度分子级细丝材料", 阶段: "原型", 成熟度: 76, 可控度: 81, 扩散度: 18, 掌握者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 前置科技UID: [], 能力: ["超高强度切割"], 局限: ["规模化制造困难"], 风险: ["军事用途极强"], 保密状态: "机密", 关联项目UID: ["project_001"], 影响事件UID: ["event_003"], 当前状态摘要: "实验正在遭到智子干扰" },
+      tech_002: { 名称: "智子工程", 类别: "高维粒子工程", 原理摘要: "将质子二维展开并蚀刻超级计算机阵列", 阶段: "已部署", 成熟度: 98, 可控度: 96, 扩散度: 8, 掌握者: [{ 类型: "文明", UID: "civ_002", 名称: "三体文明" }], 前置科技UID: [], 能力: ["实时监听", "干扰高能物理实验", "制造视觉现象"], 局限: ["无法直接宏观杀伤"], 风险: ["人类基础科学锁死"], 保密状态: "仅三体文明完全掌握", 关联项目UID: ["project_002"], 影响事件UID: ["event_001", "event_002"], 当前状态摘要: "至少两枚智子已进入地球并持续工作" },
+    },
+    项目: {
+      project_001: { 名称: "科学异常联合调查", 类型: "危机调查", 状态: "进行中", 目标: ["查明科学家自杀与实验异常的共同原因"], 负责人: [{ 类型: "人物", UID: "person_001", 名称: "史强" }], 参与者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 开始时间: "2007年", 截止时间: "未知", 进度: 31, 前置条件: { 科学家配合: "部分满足" }, 当前阻力: ["关键证据无法被常规物理解释"], 依赖科技UID: [], 使用资产UID: ["asset_002"], 保密程度: 86, 已有成果: ["确认多名死者均接触过科学边界"], 预期影响: ["揭露ETO外围网络"], 关联事件UID: ["event_001"], 摘要: "危机初期的人类调查主线" },
+      project_002: { 名称: "锁死人类科学", 类型: "文明战略", 状态: "进行中", 目标: ["阻止人类在舰队抵达前实现技术爆炸"], 负责人: [{ 类型: "文明", UID: "civ_002", 名称: "三体文明" }], 参与者: [{ 类型: "组织", UID: "org_002", 名称: "ETO" }], 开始时间: "智子抵达地球后", 截止时间: "三体舰队抵达", 进度: 64, 前置条件: { 智子部署: "满足" }, 当前阻力: ["人类工程技术仍可继续发展"], 依赖科技UID: ["tech_002"], 使用资产UID: [], 保密程度: 97, 已有成果: ["基础物理实验结果失真", "科学共同体信心下降"], 预期影响: ["人类科技发展进入长期停滞"], 关联事件UID: ["event_001", "event_002"], 摘要: "三体文明对人类执行的长期科技封锁" },
+    },
+    重要资产: {
+      asset_001: { 名称: "飞刃原始实验数据", 类型: "科研数据", 状态: "受限", 位置: { 星系: "太阳系", 天体: "地球", 国家或政体: "中国", 区域: "北京", 设施或载体: "离线存储器", 具体地点: "主角随身" }, 所有者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 控制者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 使用权限: ["仅主角"], 功能: ["证明实验异常具有非随机结构"], 局限: ["无法证明干扰源"], 重要性: 88, 暴露度: 34, 关联项目UID: ["project_001"], 关联事件UID: ["event_002"], 当前状态摘要: "已从联网设备迁出" },
+      asset_002: { 名称: "特别行动组调查网络", 类型: "情报基础设施", 状态: "可用", 位置: { 星系: "太阳系", 天体: "地球", 国家或政体: "多国联合", 区域: "全球", 设施或载体: "加密网络", 具体地点: "" }, 所有者: [{ 类型: "组织", UID: "org_001", 名称: "特别行动组" }], 控制者: [{ 类型: "组织", UID: "org_001", 名称: "特别行动组" }], 使用权限: ["调查组成员"], 功能: ["跨国案件关联", "科学家保护"], 局限: ["可能被智子监听"], 重要性: 71, 暴露度: 52, 关联项目UID: ["project_001"], 关联事件UID: [], 当前状态摘要: "正在汇集主角相关数据" },
+    },
+    情报: {
+      intel_001: { 标题: "科学家异常死亡存在共同模式", 内容摘要: "死者普遍接触过实验失真或科学边界，并在死亡前表现出基础物理信念崩溃", 真实性: "部分真实", 可信度: 82, 来源: [{ 类型: "组织", UID: "org_001", 名称: "特别行动组" }], 知情者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }, { 类型: "人物", UID: "person_001", 名称: "史强" }], 保密等级: "机密", 验证条件: ["获得完整案件卷宗"], 当前影响: ["主角确认倒计时不是孤立现象"], 有效状态: "有效" },
+      intel_002: { 标题: "停止研究可使倒计时消失", 内容摘要: "申玉菲声称只要停止纳米研究，视野中的倒计时便会终止", 真实性: "真实", 可信度: 71, 来源: [{ 类型: "人物", UID: "person_002", 名称: "申玉菲" }], 知情者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 保密等级: "仅本人", 验证条件: ["短暂停止实验"], 当前影响: ["形成可验证的因果实验"], 有效状态: "待验证" },
+    },
+    通讯: {
+      comm_001: { 标题: "红岸旧址访问许可", 发送者: [{ 类型: "人物", UID: "person_003", 名称: "叶文洁" }], 接收者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 内容摘要: "通过第三方邀请主角参加一次天体物理史料访谈", 发送时间: "2007年11月18日", 预计到达时间: "当日上午", 状态: "传输中", 通信延迟: "常规网络即时", 截获者: [{ 类型: "文明", UID: "civ_002", 名称: "三体文明" }], 关联情报UID: ["intel_002"], 待决策事项: ["是否接受邀请"], 当前影响: ["叶文洁接触窗口提前" ] },
+      comm_002: { 标题: "实验室审计通知", 发送者: [{ 类型: "组织", UID: "org_001", 名称: "特别行动组" }], 接收者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 内容摘要: "要求暂停联网实验并提交异常数据副本", 发送时间: "2007年11月17日", 预计到达时间: "已到达", 状态: "已接收", 通信延迟: "无", 截获者: [], 关联情报UID: ["intel_001"], 待决策事项: [], 当前影响: ["实验室权限可能受限"] },
+    },
+    原著事件: {
+      event_001: { 原著事件ID: "TB-01", 名称: "科学边界调查启动", 原著时间: "危机纪元前", 当前状态: "可能变形", 前置条件: { 科学家危机: { 描述: "多名科学家死亡", 状态: "满足", 改变原因: "主角提前保留证据", 关联因果节点UID: ["cause_002"] } }, 关键参与者: [{ 类型: "人物", UID: "person_001", 名称: "史强" }], 原著结果: "汪淼被卷入调查", 当前预计结果: "主角与汪淼可能形成双线调查", 替代承担者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 偏移原因: ["主角提前识别科学边界"], 关联因果节点UID: ["cause_001", "cause_002"], 下游事件UID: ["event_002"], 置信度: 76 },
+      event_002: { 原著事件ID: "TB-02", 名称: "宇宙闪烁观测之夜", 原著时间: "危机纪元前", 当前状态: "已提前", 前置条件: { 射电观测: { 描述: "获得观测条件", 状态: "满足", 改变原因: "主角提前联系射电台", 关联因果节点UID: ["cause_003"] } }, 关键参与者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 原著结果: "汪淼确认宇宙为他闪烁", 当前预计结果: "主角与史强共同见证闪烁，调查组更早接受超常干预", 替代承担者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 偏移原因: ["元知识驱动的提前验证"], 关联因果节点UID: ["cause_003", "cause_004"], 下游事件UID: ["event_003"], 置信度: 84 },
+      event_003: { 原著事件ID: "TB-03", 名称: "审判日号行动", 原著时间: "危机纪元前后期", 当前状态: "未到达", 前置条件: { 飞刃成熟: { 描述: "飞刃具备工程应用", 状态: "已改变", 改变原因: "主角保存了更完整的原始数据", 关联因果节点UID: ["cause_002"] } }, 关键参与者: [], 原著结果: "ETO核心通信资料被截获", 当前预计结果: "技术条件增强，但ETO可能更早转移资料", 替代承担者: [], 偏移原因: [], 关联因果节点UID: [], 下游事件UID: [], 置信度: 55 },
+    },
+    因果: {
+      节点: {
+        cause_001: { 标题: "主角识别倒计时的原著含义", 类型: "玩家行动", 摘要: "主角没有将倒计时视作精神幻觉", 时间: "2007年11月15日", 发起者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 影响对象: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 传播尺度: "个人", 持续性: "长期", 传播机制: ["元知识"], 直接结果: ["跳过精神诊断阶段"], 状态变化: ["调查节奏提前"], 影响事件UID: ["event_001"], 状态: "已结算", 置信度: "确定" },
+        cause_002: { 标题: "离线保存飞刃原始数据", 类型: "直接结果", 摘要: "实验异常证据未被后续审计覆盖", 时间: "2007年11月16日", 发起者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 影响对象: [{ 类型: "科技", UID: "tech_001", 名称: "飞刃纳米材料" }], 传播尺度: "组织", 持续性: "长期", 传播机制: ["证据保全", "调查组介入"], 直接结果: ["异常曲线可重复分析"], 状态变化: ["特别行动组更早相信系统性干预"], 影响事件UID: ["event_001", "event_003"], 状态: "活跃", 置信度: "高概率" },
+        cause_003: { 标题: "提前预约射电望远镜", 类型: "玩家行动", 摘要: "宇宙闪烁验证窗口提前", 时间: "2007年11月17日", 发起者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 影响对象: [{ 类型: "事件", UID: "event_002", 名称: "宇宙闪烁观测之夜" }], 传播尺度: "组织", 持续性: "短期", 传播机制: ["资源调度"], 直接结果: ["史强将共同参与观测"], 状态变化: ["事件提前"], 影响事件UID: ["event_002"], 状态: "等待传播", 置信度: "确定" },
+        cause_004: { 标题: "ETO重新评估主角威胁", 类型: "势力响应", 摘要: "申玉菲察觉主角对倒计时机制有所预判", 时间: "2007年11月18日", 发起者: [{ 类型: "组织", UID: "org_002", 名称: "ETO" }], 影响对象: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 传播尺度: "组织", 持续性: "长期", 传播机制: ["监视", "内部汇报"], 直接结果: ["叶文洁提前获知主角"], 状态变化: ["接触窗口提前", "主角危险上升"], 影响事件UID: ["event_002"], 状态: "活跃", 置信度: "高概率" },
+      },
+      边: {
+        edge_001: { 起点UID: "cause_001", 终点UID: "cause_002", 关系: "促进", 必要条件: ["主角相信元知识仍可靠"], 延迟: "1日", 强度: 82, 状态: "已完成", 置信度: "确定" },
+        edge_002: { 起点UID: "cause_002", 终点UID: "cause_003", 关系: "导致", 必要条件: ["异常数据存在"], 延迟: "数小时", 强度: 76, 状态: "有效", 置信度: "高概率" },
+        edge_003: { 起点UID: "cause_003", 终点UID: "cause_004", 关系: "暴露", 必要条件: ["ETO监测射电台预约"], 延迟: "即时", 强度: 69, 状态: "有效", 置信度: "高概率" },
+      },
+      主链: ["cause_001", "cause_002", "cause_003", "cause_004"],
+      分支: { branch_001: ["cause_002", "event_003"] },
+      延迟效应: {
+        delay_001: { 名称: "调查组提前接受超常干预", 来源节点UID: ["cause_002", "cause_003"], 当前阶段: "证据累积", 成熟条件: ["史强亲眼见证宇宙闪烁"], 预计时间: "次日凌晨", 影响对象: [{ 类型: "组织", UID: "org_001", 名称: "特别行动组" }], 预计结果: ["调查资源升级", "主角获得更高权限"], 状态: "即将触发", 置信度: "高概率" },
+        delay_002: { 名称: "ETO转移关键资料", 来源节点UID: ["cause_004"], 当前阶段: "风险形成", 成熟条件: ["叶文洁确认主角掌握异常知识"], 预计时间: "数周内", 影响对象: [{ 类型: "组织", UID: "org_002", 名称: "ETO" }], 预计结果: ["审判日号资料可能提前分散"], 状态: "潜伏", 置信度: "可能" },
+      },
+      未来影响: {
+        projection_001: { 名称: "审判日号行动难度上升", 目标事件UID: ["event_003"], 来源节点UID: ["cause_004"], 时间范围: "数月至一年", 可能变化: ["ETO提前加密或迁移通信记录", "行动仍可能发生但信息收益下降"], 维持条件: ["主角继续公开异常行动"], 反事实基线: "原著中ETO未预见飞刃用途", 置信度: "可能" },
+      },
+    },
+    世界线: {
+      基线: "原著基线",
+      当前世界线: "早醒者支线",
+      最近共同锚点: "汪淼卷入科学边界调查前",
+      分歧点UID: ["cause_001"],
+      分类: "局部偏移",
+      总体偏移度: 29,
+      偏移维度: { 人物轨迹: 37, 关系网络: 31, 组织政策: 24, 科技工程: 28, 文明命运: 25 },
+      不可逆改变: ["史强已将主角列为核心调查对象", "飞刃原始异常数据得到离线保存"],
+      已取消事件UID: [],
+      等价完成: {},
+      替代承担者: { event_002: "主角承担汪淼的部分观测功能" },
+      仍相容事件UID: ["event_003"],
+      已失效事件UID: [],
+      未来影响UID: ["projection_001"],
+      分类依据: ["核心文明命运尚未改变", "早期调查节奏与人物关系已产生明确偏移"],
+    },
+    任务: {
+      task_001: { 名称: "验证宇宙闪烁", 状态: "进行中", 负责人: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 目标: ["通过射电望远镜确认全宇宙背景辐射闪烁"], 截止时间: "2007年11月19日凌晨", 进度: 62, 前置条件: ["获得射电台时段"], 当前阻力: ["观测可能被智子定向操控"], 完成影响: ["特别行动组更早接受非人干预"], 失败影响: ["主角可信度下降"], 关联事件UID: ["event_002"], 关联因果节点UID: ["cause_003"] },
+      task_002: { 名称: "保持元知识隐蔽", 状态: "受阻", 负责人: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 目标: ["避免ETO与智子确认主角知道原著未来"], 截止时间: "长期", 进度: 43, 前置条件: [], 当前阻力: ["对倒计时反应过于冷静", "提前预约射电台"], 完成影响: ["保留行动突然性"], 失败影响: ["ETO改变策略", "元知识迅速失效"], 关联事件UID: [], 关联因果节点UID: ["cause_004"] },
+    },
+    承诺: {
+      promise_001: { 内容: "向史强提供一份可验证的异常实验数据", 承诺者: [{ 类型: "主角", UID: "主角", 名称: "沈砚" }], 对象: [{ 类型: "人物", UID: "person_001", 名称: "史强" }], 状态: "有效", 截止时间: "今晚", 约束与代价: ["不能暴露穿越者身份"], 当前影响: ["史强暂缓强制调查"], 关联关系UID: ["relation_001"], 关联因果节点UID: ["cause_002"] },
+    },
+    记忆摘要: {
+      memory_001: { 时期: "抵达至倒计时出现", 摘要: "主角用三年时间建立本地身份，并进入纳米材料项目；直到倒计时出现，原著记忆才从遥远知识变成现实威胁。", 长期有效事实: ["主角是穿越者", "主角知道黑暗森林法则但尚未泄露"], 关键变化: ["智子开始直接关注主角"], 关联UID: ["cause_001", "tech_001"], 重要性: 94 },
+    },
+  });
+})(window.ThreeBodyStatusbar);
+
+((TB) => {
+  const { state, $id, esc, rebuildIndexes, updateHeader, updateFooter } = TB;
+  const THEME_STORAGE_KEY = "three_body_statusbar_theme_v1";
+  const THEMES = new Set(["night", "day", "tea"]);
+
+  const getThemeStores = () => {
+    const stores = [];
+    try {
+      if (window.parent?.localStorage) stores.push(window.parent.localStorage);
+    } catch {}
+    try {
+      if (window.localStorage && !stores.includes(window.localStorage)) stores.push(window.localStorage);
+    } catch {}
+    return stores;
+  };
+
+  const readTheme = () => {
+    for (const store of getThemeStores()) {
+      try {
+        const value = store.getItem(THEME_STORAGE_KEY);
+        if (THEMES.has(value)) return value;
+      } catch {}
+    }
+    return "night";
+  };
+
+  const applyTheme = (theme, persist = false) => {
+    const next = THEMES.has(theme) ? theme : "night";
+    document.documentElement.dataset.theme = next;
+    document.querySelectorAll("[data-theme-choice]").forEach(button => {
+      const active = button.dataset.themeChoice === next;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    if (persist) {
+      getThemeStores().forEach(store => {
+        try { store.setItem(THEME_STORAGE_KEY, next); } catch {}
+      });
+    }
+  };
+
+  const showFailure = message => {
+    const panel = $id(`tb-panel-${state.tab}`) || $id("tb-panel-observation");
+    panel.innerHTML = `<div class="tb-empty tb-error">${esc(message)}</div>`;
+    $id("tb-source").textContent = "MVU SIGNAL · UNAVAILABLE";
+    $id("tb-footer-status").textContent = "未读取到 stat_data · 可在地址末尾添加 ?preview=1 检查界面";
+  };
+
+  const renderAll = data => {
+    state.data = data;
+    rebuildIndexes(data);
+    updateHeader(data);
+    TB.renderObservation(data);
+    TB.renderProtagonist(data);
+    TB.renderPeople(data);
+    TB.renderCivilization(data);
+    TB.renderCausality(data);
+    TB.renderRecords(data);
+    updateFooter(data);
+  };
+
+  const readWithRetry = async () => {
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      const data = await TB.readGameData();
+      if (data && Object.keys(data).length) return data;
+      await new Promise(resolve => setTimeout(resolve, 180));
+    }
+    return null;
+  };
+
+  const refresh = async () => {
+    if (state.refreshing) return;
+    state.refreshing = true;
+    $id("tb-footer-status").textContent = "正在重新采样 MVU 信号";
+    try {
+      const data = await readWithRetry();
+      if (!data) {
+        showFailure("未能读取 MVU 变量。请确认当前楼层或聊天变量中存在 stat_data，并已启用酒馆助手与 MVU。\n预览界面可在状态栏地址末尾添加 ?preview=1。");
+        return;
+      }
+      renderAll(data);
+    } catch (error) {
+      showFailure(`状态栏渲染失败：${error?.message || "未知错误"}`);
+    } finally {
+      state.refreshing = false;
+    }
+  };
+
+  const setTab = tab => {
+    if (!$id(`tb-panel-${tab}`)) return;
+    state.tab = tab;
+    document.querySelectorAll(".tb-tab").forEach(button => button.classList.toggle("active", button.dataset.tab === tab));
+    document.querySelectorAll(".tb-panel").forEach(panel => panel.classList.toggle("active", panel.id === `tb-panel-${tab}`));
+    TB.closeModal();
+  };
+
+  const handleClick = event => {
+    const tab = event.target.closest("[data-tab]");
+    if (tab) {
+      setTab(tab.dataset.tab);
+      return;
+    }
+    const target = event.target.closest("[data-action]");
+    if (!target) return;
+    const action = target.dataset.action;
+    if (action === "set-theme") {
+      applyTheme(target.dataset.themeChoice, true);
+      return;
+    }
+    if (action === "refresh") refresh();
+    if (action === "close-modal") TB.closeModal();
+    if (action === "open-entity") TB.openEntity(target.dataset.kind, target.dataset.uid);
+    if (action === "open-root") TB.openRoot(target.dataset.root);
+    if (action === "npc-filter") {
+      state.npcFilter = target.dataset.filter || "全部";
+      TB.renderPeople(state.data);
+    }
+    if (action === "domain-filter") {
+      state.domainFilter = target.dataset.filter || "全部";
+      TB.renderCivilization(state.data);
+    }
+  };
+
+  const debounce = (fn, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  };
+
+  const bindTavernEvents = () => {
+    if (typeof globalThis.eventOn !== "function" || !globalThis.tavern_events) return;
+    const updated = debounce(refresh, 300);
+    const received = () => {
+      const timer = setTimeout(refresh, 1000);
+      state.timers.push(timer);
+    };
+    const eventPairs = [
+      [globalThis.tavern_events.MESSAGE_UPDATED, updated],
+      [globalThis.tavern_events.MESSAGE_EDITED, updated],
+      [globalThis.tavern_events.MESSAGE_SWIPED, updated],
+      [globalThis.tavern_events.MESSAGE_RECEIVED, received],
+      [globalThis.tavern_events.CHAT_CHANGED, () => location.reload()],
+    ].filter(([eventName]) => eventName);
+    eventPairs.forEach(([eventName, handler]) => {
+      try {
+        const subscription = globalThis.eventOn(eventName, handler);
+        if (subscription?.stop) state.cleanup.push(() => subscription.stop());
+      } catch {}
+    });
+  };
+
+  const destroy = () => {
+    state.cleanup.splice(0).forEach(stop => {
+      try { stop(); } catch {}
+    });
+    state.timers.splice(0).forEach(timer => clearTimeout(timer));
+    clearTimeout(state.npcSearchTimer);
+  };
+
+  const init = async () => {
+    applyTheme(readTheme());
+    const frame = $id("tb-frame");
+    frame.addEventListener("click", handleClick);
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") TB.closeModal();
+    });
+    bindTavernEvents();
+    if (typeof globalThis.$ === "function") globalThis.$(window).on("pagehide", destroy);
+    else window.addEventListener("pagehide", destroy, { once: true });
+    await refresh();
+  };
+
+  const launch = () => {
+    try {
+      if (typeof globalThis.errorCatched === "function") globalThis.errorCatched(init)();
+      else Promise.resolve(init()).catch(error => showFailure(error?.message || "初始化失败"));
+    } catch (error) {
+      showFailure(error?.message || "初始化失败");
+    }
+  };
+
+  TB.refresh = refresh;
+  if (typeof globalThis.$ === "function") globalThis.$(() => launch());
+  else setTimeout(launch, 0);
+})(window.ThreeBodyStatusbar);
+
+  </script>
+</body>
+</html>
