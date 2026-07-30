@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="768" viewBox="0 0 512 512">
+<defs>
+  <radialGradient id="bg"><stop stop-color="hsl(282 52% 82%)"/><stop offset="1" stop-color="hsl(352 47% 32%)"/></radialGradient>
+  <linearGradient id="petal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8ed"/><stop offset=".47" stop-color="hsl(282 68% 70%)"/><stop offset="1" stop-color="hsl(352 68% 48%)"/></linearGradient>
+  <linearGradient id="gold"><stop stop-color="#fff0b5"/><stop offset=".48" stop-color="#c69043"/><stop offset="1" stop-color="#f6df9b"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="512" height="512" rx="256" fill="url(#bg)"/>
+<circle cx="256" cy="256" r="225" fill="none" stroke="rgba(255,255,255,.72)" stroke-width="9"/>
+<circle cx="256" cy="256" r="205" fill="rgba(28,24,54,.13)" stroke="url(#gold)" stroke-width="12"/>
+<path d="M256 256 C229 205 239 133 256 133 C273 133 283 205 256 256Z" transform="rotate(0 256 256)" fill="url(#petal)" opacity="0.50"/><path d="M256 256 C229 205 239 126 256 126 C273 126 283 205 256 256Z" transform="rotate(45 256 256)" fill="url(#petal)" opacity="0.62"/><path d="M256 256 C229 205 239 139 256 139 C273 139 283 205 256 256Z" transform="rotate(90 256 256)" fill="url(#petal)" opacity="0.74"/><path d="M256 256 C229 205 239 145 256 145 C273 145 283 205 256 256Z" transform="rotate(135 256 256)" fill="url(#petal)" opacity="0.50"/><path d="M256 256 C229 205 239 148 256 148 C273 148 283 205 256 256Z" transform="rotate(180 256 256)" fill="url(#petal)" opacity="0.62"/><path d="M256 256 C229 205 239 134 256 134 C273 134 283 205 256 256Z" transform="rotate(225 256 256)" fill="url(#petal)" opacity="0.74"/><path d="M256 256 C229 205 239 127 256 127 C273 127 283 205 256 256Z" transform="rotate(270 256 256)" fill="url(#petal)" opacity="0.50"/><path d="M256 256 C229 205 239 123 256 123 C273 123 283 205 256 256Z" transform="rotate(315 256 256)" fill="url(#petal)" opacity="0.62"/>
+<g fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"><path d="M256 159c-58 23-86 74-70 132 13 47 43 72 70 80 27-8 57-33 70-80 16-58-12-109-70-132zm0 45c23 18 37 42 37 70 0 29-14 51-37 63-23-12-37-34-37-63 0-28 14-52 37-70z"/></g>
+<circle cx="256" cy="256" r="27" fill="#fff8df" stroke="url(#gold)" stroke-width="9"/>
+<circle cx="256" cy="256" r="13" fill="hsl(352 70% 62%)"/>
+</svg>
